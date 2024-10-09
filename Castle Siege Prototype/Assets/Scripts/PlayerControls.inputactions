@@ -6,9 +6,18 @@
             "id": "56052c9d-812b-461f-8403-3e46168f9522",
             "actions": [
                 {
+                    "name": "GroundMovement",
+                    "type": "Value",
+                    "id": "817dd27a-c062-4a15-8beb-4848ffea9e5f",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "Jump",
                     "type": "Button",
-                    "id": "32e5820b-d1e1-46ae-bd22-ec7a7ea1600f",
+                    "id": "239de46b-38a5-48f6-84e4-f8e51731cab6",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -17,8 +26,63 @@
             ],
             "bindings": [
                 {
+                    "name": "WASD",
+                    "id": "1228206e-173f-4736-bc48-2df5d9956e58",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GroundMovement",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "c7d7f200-318b-4fe9-ac39-337ad4c4cfdc",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GroundMovement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "babe8ea2-8471-4933-8429-18517cd09b0f",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GroundMovement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "ca1a3bbf-bf4c-4569-9edc-6d4d52e1e0c6",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GroundMovement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "78de621d-d70b-4278-9253-ef6e19550c40",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GroundMovement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
                     "name": "",
-                    "id": "f8c68629-921a-4e04-bb9e-3d01c7cab17f",
+                    "id": "ab71521b-a087-49d0-ad3e-b9f5554a0d9a",
                     "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
