@@ -8,13 +8,20 @@ public class PlayerController : MonoBehaviour
 
     private PlayerControls controls;
 
-    private float moveSpeed = 6f;
+    [SerializeField]
+    private float moveSpeed = 5f;
+    [SerializeField]
+    private float walkingSpeed = 1.5f;
+    [SerializeField]
+    private float sprintSpeed = 7f;
 
     private Vector3 velocity;
 
     private float gravity = -9.81f;
 
     private Vector2 move;
+
+    private Vector2 sprint;
 
     private float jumpHeight = 2.4f;
 
@@ -41,6 +48,7 @@ public class PlayerController : MonoBehaviour
         Grav();
         PlayerMovement();
         Jump();
+        
     }
 
     private void Grav()
@@ -65,13 +73,28 @@ public class PlayerController : MonoBehaviour
 
         Vector3 movement = (move.y * transform.forward) + (move.x * transform.right);
         controller.Move(movement * moveSpeed * Time.deltaTime);
+
+
+
+        sprint = controls.Movement.Sprint.ReadValue<Vector2>();
+
+        sprint = move * sprintSpeed;
+
     }
 
+    
+   
+
+
+
+    
+    
     private void Jump()
     {
         if (controls.Movement.Jump.triggered)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            
         }
     }
 
