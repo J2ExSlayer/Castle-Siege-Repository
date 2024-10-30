@@ -419,7 +419,7 @@ public class PlayerMovement : MonoBehaviour
     {
         forwardDirection = Vector3.up;
         move.x += direction.x * airSpeed;
-        move.z += direction.z * airSpeed;
+        move.y += direction.y * airSpeed;
 
         yVelocity += forwardDirection;
         speed = wallClimbSpeed;
