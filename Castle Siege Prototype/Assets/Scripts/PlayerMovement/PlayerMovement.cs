@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
     Vector3 direction;
     Vector3 forwardDirection;
     Vector3 wallNormal;
+    Vector3 lastWallNormal;
 
     RaycastHit leftWallHit;
     RaycastHit rightWallHit;
@@ -30,7 +31,9 @@ public class PlayerMovement : MonoBehaviour
     bool isWallRunning;
     bool onLeftWall;
     bool onRightWall;
+    bool hasWallRun = false;
 
+    [SerializeField]
     int jumpCharges;
 
     float speed;
@@ -70,20 +73,24 @@ public class PlayerMovement : MonoBehaviour
         if (isGrounded)
         {
             GroundedMovement();
+
         }
         else if (!isGrounded && !isWallRunning)
         {
             AirMovement();
-            jumpCharges = 0;
+            //StartCoroutine(JumpGroundDelay());
+            //jumpCharges = 0;
         }
 
-        else if(isWallRunning && !isWallRunning)
+        else if(isWallRunning)
         {
             WallRunMovement();
+            jumpCharges = 1;
+            //StartCoroutine(JumpDelay());
             //DecreaseSpeed(WallRuneSpeedDecrease);
         }
         
-        GroundedMovement();
+        //GroundedMovement();
         CheckGround();
         controller.Move(move * Time.deltaTime);
         ApplyGravity();
@@ -127,6 +134,8 @@ public class PlayerMovement : MonoBehaviour
         {
 
             Jump();
+            StartCoroutine(JumpGroundDelay());
+            //jumpCharges = 0;
 
 
         }
@@ -186,6 +195,7 @@ public class PlayerMovement : MonoBehaviour
         if (isGrounded)
         {
             jumpCharges = 1;
+            hasWallRun = false;
 
         }
     }
@@ -200,19 +210,35 @@ public class PlayerMovement : MonoBehaviour
 
     void Jump()
     {
+        
         if (!isGrounded && !isWallRunning)
         {
-            jumpCharges -= 1;
+            //jumpCharges = 0;
+            
         }
         else if (isWallRunning)
         {
             ExitWallRun();
+            //StartCoroutine(JumpWallDelay());
             //IncreaseSpeed(wallRunSpeedIncrease);
         }
+        
 
         yVelocity.y = Mathf.Sqrt(jumpHeight * -2f * normalGravity);
+        //jumpCharges = 0;
 
+    }
 
+    IEnumerator JumpGroundDelay()
+    {
+        yield return new WaitForSeconds(0.1f);
+        jumpCharges = 0;
+    }
+
+    IEnumerator JumpWallDelay()
+    {
+        yield return new WaitForSeconds(0.5f);
+        jumpCharges = 0;
     }
 
     void CheckWallRun()
@@ -223,7 +249,7 @@ public class PlayerMovement : MonoBehaviour
 
         if ((onRightWall || onLeftWall) && !isWallRunning)
         {
-            WallRun();
+            TestWallRun();
         }
         if ((!onRightWall && !onLeftWall) && isWallRunning)
         {
@@ -242,7 +268,7 @@ public class PlayerMovement : MonoBehaviour
         // I don't know if we want this so I'm leaving it commented for now
         yVelocity = new Vector3(0f, 0f, 0f);
 
-        wallNormal = onLeftWall ? leftWallHit.normal : rightWallHit.normal;
+        
         forwardDirection = Vector3.Cross(wallNormal, Vector3.up);
 
         if(Vector3.Dot(forwardDirection, transform.forward) < 0)
@@ -255,6 +281,8 @@ public class PlayerMovement : MonoBehaviour
     void ExitWallRun()
     {
         isWallRunning = false;
+        StartCoroutine(JumpWallDelay());
+        lastWallNormal = wallNormal;
     }
 
     void WallRunMovement()
@@ -274,6 +302,26 @@ public class PlayerMovement : MonoBehaviour
         move = Vector3.ClampMagnitude(move, speed);
 
     }
+
+    void TestWallRun()
+    {
+        wallNormal = onLeftWall ? leftWallHit.normal : rightWallHit.normal;
+        if(hasWallRun)
+        {
+            float wallAngle = Vector3.Angle(wallNormal, lastWallNormal);
+            if (wallAngle > 15)
+            {
+                WallRun();
+            }
+        }
+        else
+        {
+            WallRun();
+            hasWallRun = true;
+        }
+
+    }
+    
 
 
     
