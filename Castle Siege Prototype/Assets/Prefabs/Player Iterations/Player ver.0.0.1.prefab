@@ -109,9 +109,16 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 8
-  runSpeed: 8
-  sprintSpeed: 20
+  wallMask:
+    serializedVersion: 2
+    m_Bits: 64
+  jumpCharges: 0
+  runSpeed: 12
+  sprintSpeed: 24
+  wallRunSpeedIncrease: 0
+  wallRunSpeedDecrease: 0
   normalGravity: -13
+  wallRunGravity: -1
   airSpeed: 0.3
   jumpHeight: 5
   turnSmoothTime: 0.1
