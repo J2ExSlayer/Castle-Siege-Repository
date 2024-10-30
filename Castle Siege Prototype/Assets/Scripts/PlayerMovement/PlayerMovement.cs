@@ -15,6 +15,8 @@ public class PlayerMovement : MonoBehaviour
 
     public LayerMask wallMask;
 
+    public LayerMask climbMask;
+
     Vector3 move;
     //Vector3 input;
     Vector3 yVelocity;
@@ -25,29 +27,48 @@ public class PlayerMovement : MonoBehaviour
 
     RaycastHit leftWallHit;
     RaycastHit rightWallHit;
+    RaycastHit wallHit;
+    RaycastHit climbHit;
 
     bool isGrounded;
     bool isSprinting;
+
     bool isWallRunning;
     bool onLeftWall;
     bool onRightWall;
     bool hasWallRun = false;
+    bool hasClimbWall = false;
+
+    bool isClimbing;
+    bool canClimb;
+    bool hasClimbed;
+
+    bool isWallClimbing;
+    bool canWallClimb;
+    bool hasWallClimbed;
 
     [SerializeField]
     int jumpCharges;
 
     float speed;
     float gravity;
+    float climbTimer;
+    float wallClimbTimer;
 
     public float runSpeed;
     public float sprintSpeed;
+    public float airSpeed;
+    public float climbSpeed;
+    public float wallClimbSpeed;
+
+    public float maxClimbTimer;
+    public float maxWallClimbTimer;
+
     public float wallRunSpeedIncrease;
     public float wallRunSpeedDecrease;
 
     public float normalGravity;
     public float wallRunGravity;
-
-    public float airSpeed;
 
     public float jumpHeight;
 
@@ -70,12 +91,14 @@ public class PlayerMovement : MonoBehaviour
 
         HandleInput();
         CheckWallRun();
-        if (isGrounded)
+        CheckClimbing();
+        CheckWallClimbing();
+        if(isGrounded)
         {
             GroundedMovement();
 
         }
-        else if (!isGrounded && !isWallRunning)
+        else if(!isGrounded && !isWallRunning && !isClimbing && !isWallClimbing)
         {
             AirMovement();
             //StartCoroutine(JumpGroundDelay());
@@ -89,7 +112,27 @@ public class PlayerMovement : MonoBehaviour
             //StartCoroutine(JumpDelay());
             //DecreaseSpeed(WallRuneSpeedDecrease);
         }
-        
+        else if(isClimbing)
+        {
+            ClimbMovement();
+            climbTimer -= 1f * Time.deltaTime;
+            if(climbTimer < 0)
+            {
+                isClimbing = false;
+                hasClimbed = true;
+            }
+        }
+        else if (isWallClimbing)
+        {
+            WallClimbMovement();
+            wallClimbTimer -= 1f * Time.deltaTime;
+            if (wallClimbTimer < 0)
+            {
+                isWallClimbing = false;
+                hasWallClimbed = true;
+            }
+        }
+
         //GroundedMovement();
         CheckGround();
         controller.Move(move * Time.deltaTime);
@@ -196,6 +239,8 @@ public class PlayerMovement : MonoBehaviour
         {
             jumpCharges = 1;
             hasWallRun = false;
+            hasClimbed = false;
+            climbTimer = maxClimbTimer;
 
         }
     }
@@ -203,7 +248,7 @@ public class PlayerMovement : MonoBehaviour
 
     void ApplyGravity()
     {
-        gravity = isWallRunning ? wallRunGravity : normalGravity;
+        gravity = isWallRunning ? wallRunGravity : isClimbing ? 0f : isWallClimbing ? 0f : normalGravity;
         yVelocity.y += gravity * Time.deltaTime;
         controller.Move(yVelocity * Time.deltaTime);
     }
@@ -223,6 +268,10 @@ public class PlayerMovement : MonoBehaviour
             //IncreaseSpeed(wallRunSpeedIncrease);
         }
         
+        hasClimbed = false;
+        climbTimer = maxClimbTimer;
+        hasWallClimbed = false;
+        wallClimbTimer = maxWallClimbTimer;
 
         yVelocity.y = Mathf.Sqrt(jumpHeight * -2f * normalGravity);
         //jumpCharges = 0;
@@ -323,6 +372,61 @@ public class PlayerMovement : MonoBehaviour
     }
     
 
+    void CheckClimbing()
+    {
+        canClimb = Physics.Raycast(transform.position, transform.forward, out wallHit, 0.7f, wallMask);
+        float wallAngle = Vector3.Angle(-wallHit.normal, transform.forward);
+        if (wallAngle < 15 && !hasClimbed && canClimb)
+        {
+            isClimbing = true;
+        }
+        else
+        {
+            isClimbing = false;
+        }
 
-    
+    }
+
+    void ClimbMovement()
+    {
+        forwardDirection = Vector3.up;
+        move.x += direction.x * airSpeed;
+        move.z += direction.z * airSpeed;
+
+        yVelocity += forwardDirection;
+        speed = climbSpeed;
+
+        move = Vector3.ClampMagnitude(move, speed);
+        yVelocity = Vector3.ClampMagnitude(yVelocity, speed);
+    }
+
+    void CheckWallClimbing()
+    {
+        canWallClimb = Physics.Raycast(transform.position, transform.forward, out climbHit, 0.7f, climbMask);
+        float wallClimbAngle = Vector3.Angle(-climbHit.normal, transform.forward);
+        if (wallClimbAngle < 15 && !hasWallClimbed && canWallClimb)
+        {
+            isWallClimbing = true;
+        }
+        else
+        {
+            isWallClimbing = false;
+        }
+
+    }
+
+    void WallClimbMovement()
+    {
+        forwardDirection = Vector3.up;
+        move.x += direction.x * airSpeed;
+        move.z += direction.z * airSpeed;
+
+        yVelocity += forwardDirection;
+        speed = wallClimbSpeed;
+
+        move = Vector3.ClampMagnitude(move, speed);
+        yVelocity = Vector3.ClampMagnitude(yVelocity, speed);
+    }
+
+
 }
