@@ -19,7 +19,9 @@ public class PlayerMovement : MonoBehaviour
 
     Vector3 move;
     //Vector3 input;
+    [SerializeField]
     Vector3 yVelocity;
+    Vector3 maxYVelocity;
     Vector3 direction;
     Vector3 forwardDirection;
     Vector3 wallNormal;
@@ -96,13 +98,14 @@ public class PlayerMovement : MonoBehaviour
         if(isGrounded)
         {
             GroundedMovement();
-
+            ApplyGravity();
         }
         else if(!isGrounded && !isWallRunning && !isClimbing && !isWallClimbing)
         {
             AirMovement();
             //StartCoroutine(JumpGroundDelay());
             //jumpCharges = 0;
+            ApplyGravity();
         }
 
         else if(isWallRunning)
@@ -111,6 +114,7 @@ public class PlayerMovement : MonoBehaviour
             jumpCharges = 1;
             //StartCoroutine(JumpDelay());
             //DecreaseSpeed(WallRuneSpeedDecrease);
+            ApplyGravity();
         }
         else if(isClimbing)
         {
@@ -121,11 +125,12 @@ public class PlayerMovement : MonoBehaviour
                 isClimbing = false;
                 hasClimbed = true;
             }
+            ApplyGravity();
         }
         else if (isWallClimbing)
         {
             WallClimbMovement();
-            wallClimbTimer -= 1f * Time.deltaTime;
+            wallClimbTimer = 1f * Time.deltaTime;
             if (wallClimbTimer < 0)
             {
                 isWallClimbing = false;
@@ -136,7 +141,7 @@ public class PlayerMovement : MonoBehaviour
         //GroundedMovement();
         CheckGround();
         controller.Move(move * Time.deltaTime);
-        ApplyGravity();
+        
 
     }
 
@@ -250,7 +255,12 @@ public class PlayerMovement : MonoBehaviour
     {
         gravity = isWallRunning ? wallRunGravity : isClimbing ? 0f : isWallClimbing ? 0f : normalGravity;
         yVelocity.y += gravity * Time.deltaTime;
+        if(yVelocity.y < -10f)
+        {
+            yVelocity.y = -10f;
+        }
         controller.Move(yVelocity * Time.deltaTime);
+        
     }
 
     void Jump()
@@ -417,15 +427,36 @@ public class PlayerMovement : MonoBehaviour
 
     void WallClimbMovement()
     {
-        forwardDirection = Vector3.up;
-        move.x += direction.x * airSpeed;
-        move.y += direction.y * airSpeed;
+        //input = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
 
-        yVelocity += forwardDirection;
-        speed = wallClimbSpeed;
+        //input = transform.TransformDirection(input);
+        //input = Vector3.ClampMagnitude(input, 1f);
 
-        move = Vector3.ClampMagnitude(move, speed);
-        yVelocity = Vector3.ClampMagnitude(yVelocity, speed);
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
+        Vector3 direction = new Vector3(horizontal, vertical, 0f).normalized;
+
+
+
+        if (direction.magnitude >= 0.1f)
+        {
+            float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg + cam.eulerAngles.y;
+            //targetAngle = targetAngle;// - 90f;
+            // The rotation wants to be at 0 degrees on the x
+            // but forward is on the z not the x axis so I needed to rotate -90 degrees for everything to be accurate
+
+            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
+
+            transform.rotation = Quaternion.Euler(0f, angle, 0f);
+
+
+            Vector3 moveDir = Quaternion.Euler(0f, targetAngle /*+ 90f*/, 0f) * Vector3.up;
+            // had to add back the 90f for the targetAngle variable
+            // at this point specifically because it was affecting the movement
+
+
+            controller.Move(moveDir.normalized * speed * Time.deltaTime);
+        }
     }
 
 
