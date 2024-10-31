@@ -6423,6 +6423,7 @@ GameObject:
   - component: {fileID: 516617995}
   - component: {fileID: 516617994}
   - component: {fileID: 516617993}
+  - component: {fileID: 516617996}
   m_Layer: 5
   m_Name: Play tutorial
   m_TagString: Untagged
@@ -6493,7 +6494,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 516617994}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 516617996}
+        m_TargetAssemblyTypeName: UI, Assembly-CSharp
+        m_MethodName: ChangeScene
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 3
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &516617994
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6532,6 +6545,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 516617991}
   m_CullTransparentMesh: 1
+--- !u!114 &516617996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 516617991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fca9b1fb4f68f34fa2609ebc5fded37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!43 &522386009
 Mesh:
   m_ObjectHideFlags: 0
@@ -10474,6 +10499,7 @@ GameObject:
   - component: {fileID: 855189168}
   - component: {fileID: 855189167}
   - component: {fileID: 855189166}
+  - component: {fileID: 855189169}
   m_Layer: 5
   m_Name: Go Back
   m_TagString: Untagged
@@ -10544,7 +10570,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 855189167}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 855189169}
+        m_TargetAssemblyTypeName: UI, Assembly-CSharp
+        m_MethodName: ChangeScene
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &855189167
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10583,6 +10621,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 855189164}
   m_CullTransparentMesh: 1
+--- !u!114 &855189169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 855189164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fca9b1fb4f68f34fa2609ebc5fded37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!43 &858744828
 Mesh:
   m_ObjectHideFlags: 0
@@ -13744,6 +13794,7 @@ GameObject:
   - component: {fileID: 1204650474}
   - component: {fileID: 1204650473}
   - component: {fileID: 1204650472}
+  - component: {fileID: 1204650475}
   m_Layer: 5
   m_Name: Levels
   m_TagString: Untagged
@@ -13814,7 +13865,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1204650473}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1204650475}
+        m_TargetAssemblyTypeName: UI, Assembly-CSharp
+        m_MethodName: ChangeScene
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1204650473
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13853,6 +13916,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1204650470}
   m_CullTransparentMesh: 1
+--- !u!114 &1204650475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1204650470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fca9b1fb4f68f34fa2609ebc5fded37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!43 &1221874986
 Mesh:
   m_ObjectHideFlags: 0
