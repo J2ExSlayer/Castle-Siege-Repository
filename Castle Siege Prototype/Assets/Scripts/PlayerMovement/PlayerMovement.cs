@@ -24,6 +24,9 @@ public class PlayerMovement : MonoBehaviour
     Vector3 maxYVelocity;
     Vector3 direction;
     Vector3 forwardDirection;
+    Vector3 upDirection;
+    Vector3 zDirection;
+    Vector3 xDirection;
     Vector3 wallNormal;
     Vector3 lastWallNormal;
 
@@ -78,6 +81,8 @@ public class PlayerMovement : MonoBehaviour
 
     float turnSmoothVelocity;
 
+    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -90,18 +95,23 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
 
-        HandleInput();
+
+
+        //HandleInput();
         CheckWallRun();
         CheckClimbing();
         CheckWallClimbing();
         if(isGrounded)
         {
+            HandleInput();
             GroundedMovement();
             ApplyGravity();
         }
         else if(!isGrounded && !isWallRunning && !isClimbing && !isWallClimbing)
         {
+            HandleInput();
             AirMovement();
             //StartCoroutine(JumpGroundDelay());
             //jumpCharges = 0;
@@ -110,6 +120,7 @@ public class PlayerMovement : MonoBehaviour
 
         else if(isWallRunning)
         {
+            HandleInput();
             WallRunMovement();
             jumpCharges = 1;
             //StartCoroutine(JumpDelay());
@@ -118,6 +129,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else if(isClimbing)
         {
+            HandleInput();
             ClimbMovement();
             climbTimer -= 1f * Time.deltaTime;
             if(climbTimer < 0)
@@ -127,8 +139,10 @@ public class PlayerMovement : MonoBehaviour
             }
             ApplyGravity();
         }
+        
         else if (isWallClimbing)
         {
+            WallClimbingInput();
             WallClimbMovement();
             wallClimbTimer = 1f * Time.deltaTime;
             if (wallClimbTimer < 0)
@@ -137,7 +151,7 @@ public class PlayerMovement : MonoBehaviour
                 hasWallClimbed = true;
             }
         }
-
+        
         //GroundedMovement();
         CheckGround();
         controller.Move(move * Time.deltaTime);
@@ -145,8 +159,14 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
+    Vector2 SquareToCircle(Vector2 input)
+    {
+        return (input.sqrMagnitude >= 1f) ? input.normalized : input;
+    }
+
     void HandleInput()
     {
+        
         //input = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
 
         //input = transform.TransformDirection(input);
@@ -154,6 +174,7 @@ public class PlayerMovement : MonoBehaviour
 
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
+        
         Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
 
             
@@ -170,13 +191,15 @@ public class PlayerMovement : MonoBehaviour
             transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
 
-            Vector3 moveDir = Quaternion.Euler(0f, targetAngle /*+ 90f*/, 0f) * Vector3.forward;
+            Vector3 moveDir = Quaternion.Euler(0f, targetAngle /*+ 90f*/ , 0f) * Vector3.forward;
             // had to add back the 90f for the targetAngle variable
             // at this point specifically because it was affecting the movement
 
 
             controller.Move(moveDir.normalized * speed * Time.deltaTime);
-        }
+        } 
+        
+
 
         if (Input.GetKeyDown(KeyCode.Space) && jumpCharges > 0)
         {
@@ -184,6 +207,8 @@ public class PlayerMovement : MonoBehaviour
             Jump();
             StartCoroutine(JumpGroundDelay());
             //jumpCharges = 0;
+
+
 
 
         }
@@ -197,6 +222,54 @@ public class PlayerMovement : MonoBehaviour
             isSprinting = false;
         }
 
+
+    }
+
+    void WallClimbingInput()
+    {
+        //input = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
+
+        //input = transform.TransformDirection(input);
+        //input = Vector3.ClampMagnitude(input, 1f);
+
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
+        
+        Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
+
+
+        
+        if (direction.magnitude >= 0.1f)
+        {
+
+            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg; //+ cam.eulerAngles.z;
+            //float wallAngle = Mathf.Atan2(direction.z, direction.y) * Mathf.Rad2Deg;
+            //targetAngle = targetAngle - 90f;
+            // The rotation wants to be at 0 degrees on the x
+            // but forward is on the z not the x axis so I needed to rotate -90 degrees for everything to be accurate
+
+            //float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
+
+            //transform.rotation = Quaternion.Euler(0f, angle, 0f);
+
+            if (targetAngle > -90f && targetAngle < 90f)
+            {
+
+                //Vector3 moveDir = Quaternion.Euler(targetAngle,  0f /*+ 90f */, 0f) * Vector3.up;
+                Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+
+                controller.Move(moveDir.normalized * speed * Time.deltaTime);
+            }
+           
+           
+            
+
+
+           
+            
+
+        }
+        
 
     }
 
@@ -427,37 +500,86 @@ public class PlayerMovement : MonoBehaviour
 
     void WallClimbMovement()
     {
+
+        //What am I trying to do:
+        //Take Regular movement using the x and z axis
+        //But instead of the z axis use the y
+        //to emulate wall climbing
+        //while also locking the player forward
+        //so they don't slip off when they don't want to
+        //only while touching the wall
+
+        //Step 1.
+        //make the player move left/right and up/down, unaffected by gravity
+
+        //solution idea: copy paste movement and try switching z with y
+        //new problems, make movement axis always reflect direction facing
+
+        //Step 2.
+        //make this only while the player is touching the climbing wall
+
+        //Step 3.
+        // Lock the player in the direction of the wall, unable to rotate off
+
+        //Step 4.
+        //Let the player have a jump off and let go button.
+
         //input = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
 
         //input = transform.TransformDirection(input);
         //input = Vector3.ClampMagnitude(input, 1f);
 
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
-        Vector3 direction = new Vector3(horizontal, vertical, 0f).normalized;
 
-
-
-        if (direction.magnitude >= 0.1f)
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position,    // Position
+                            transform.forward,     // Direction
+                            out hit))                         // Hit Data))
         {
-            float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg + cam.eulerAngles.y;
-            //targetAngle = targetAngle;// - 90f;
-            // The rotation wants to be at 0 degrees on the x
-            // but forward is on the z not the x axis so I needed to rotate -90 degrees for everything to be accurate
-
-            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
-
-            transform.rotation = Quaternion.Euler(0f, angle, 0f);
-
-
-            Vector3 moveDir = Quaternion.Euler(0f, targetAngle /*+ 90f*/, 0f) * Vector3.up;
-            // had to add back the 90f for the targetAngle variable
-            // at this point specifically because it was affecting the movement
-
-
-            controller.Move(moveDir.normalized * speed * Time.deltaTime);
+            transform.forward = -hit.normal;
+            controller.transform.position = Vector3.Lerp(controller.transform.position,
+            hit.point + hit.normal * 0.51f,
+                10f * Time.fixedDeltaTime);
         }
+
+        
+        
+        
+        speed = wallClimbSpeed;
+        if (direction.x != 0)
+        {
+            move.x += direction.x * speed;
+
+        }
+        else
+        {
+            move.x = 0;
+        }
+
+
+        if (direction.y != 0)
+        {
+            move.y += direction.y * speed;
+
+        }
+        else
+        {
+            move.y = 0;
+        }
+
+        if (direction.z != 0)
+        {
+            move.z += direction.z * speed;
+
+        }
+        else
+        {
+            move.z = 0;
+        }
+
+
+
+        move = Vector3.ClampMagnitude(move, speed);
+        
     }
 
-
-}
+ }
