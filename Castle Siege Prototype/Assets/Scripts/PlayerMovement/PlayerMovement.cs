@@ -238,11 +238,11 @@ public class PlayerMovement : MonoBehaviour
         Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
 
 
-        
-        if (direction.magnitude >= 0.1f)
-        {
 
-            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg; //+ cam.eulerAngles.z;
+        //if (direction.magnitude >= 0.1f)
+        //{
+
+            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg; // + cam.eulerAngles.z;
             //float wallAngle = Mathf.Atan2(direction.z, direction.y) * Mathf.Rad2Deg;
             //targetAngle = targetAngle - 90f;
             // The rotation wants to be at 0 degrees on the x
@@ -252,24 +252,51 @@ public class PlayerMovement : MonoBehaviour
 
             //transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
-            if (targetAngle > -90f && targetAngle < 90f)
-            {
+            //Vector3 moveDir = Quaternion.Euler(0f, 0f, targetAngle) * Vector3.up;
 
-                //Vector3 moveDir = Quaternion.Euler(targetAngle,  0f /*+ 90f */, 0f) * Vector3.up;
-                Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+            //controller.Move(moveDir.normalized * speed * Time.deltaTime);
+
+
+            //Make targeAngle equal the less than or greater than check
+            if (this.gameObject.transform.rotation.y > 45f && this.gameObject.transform.rotation.y < 136f) // +x direction
+            {
+                float posXDir = Mathf.Atan2(-direction.x, direction.z) * Mathf.Rad2Deg;
+
+                Vector3 moveDir = Quaternion.Euler(posXDir, 0f, 0f) * Vector3.up;
 
                 controller.Move(moveDir.normalized * speed * Time.deltaTime);
             }
-           
-           
+            
+            else if (this.gameObject.transform.rotation.y > -46f && this.gameObject.transform.rotation.y < 46f) // +z direction
+            {
+                float posZDir = Mathf.Atan2(-direction.x, direction.z) * Mathf.Rad2Deg;
+
+                Vector3 moveDir = Quaternion.Euler(0f, 0f, posZDir) * Vector3.up;
+
+                controller.Move(moveDir.normalized * speed * Time.deltaTime);
+            }
+            
+            else if (this.gameObject.transform.rotation.y > -136f && this.gameObject.transform.rotation.y < -46f) // -x direction
+            {
+                float negXDir = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+
+                Vector3 moveDir = Quaternion.Euler(negXDir, 0f, 0f) * Vector3.up;
+
+                controller.Move(moveDir.normalized * speed * Time.deltaTime);
+            }
+            else if (this.gameObject.transform.rotation.y > 135f || this.gameObject.transform.rotation.y < -135f) // -z direction
+            {
+               float negZDir = Mathf.Atan2(-direction.x, direction.z) * Mathf.Rad2Deg;
+
+                Vector3 moveDir = Quaternion.Euler(0f, 0f, negZDir) * Vector3.up;
+
+                controller.Move(moveDir.normalized * speed * Time.deltaTime);
+            }
             
 
+            //controller.Move(moveDir.normalized * speed * Time.deltaTime);
 
-           
-            
-
-        }
-        
+        //}
 
     }
 
@@ -529,7 +556,7 @@ public class PlayerMovement : MonoBehaviour
         //input = transform.TransformDirection(input);
         //input = Vector3.ClampMagnitude(input, 1f);
 
-
+        /*
         RaycastHit hit;
         if (Physics.Raycast(transform.position,    // Position
                             transform.forward,     // Direction
@@ -540,7 +567,7 @@ public class PlayerMovement : MonoBehaviour
             hit.point + hit.normal * 0.51f,
                 10f * Time.fixedDeltaTime);
         }
-
+        */
         
         
         
