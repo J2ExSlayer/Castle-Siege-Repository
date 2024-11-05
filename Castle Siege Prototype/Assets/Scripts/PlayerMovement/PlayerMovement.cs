@@ -19,6 +19,8 @@ public class PlayerMovement : MonoBehaviour
 
     public LayerMask climbMask;
 
+    public Collider coll;
+
     Vector3 move;
     //Vector3 input;
     [SerializeField]
@@ -101,7 +103,7 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         controller = GetComponent<CharacterController>();
-        
+        coll = GetComponent<Collider>();
     }
 
 
@@ -109,14 +111,14 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
 
 
 
+        WallClimbingInput();
         //HandleInput();
         CheckWallRun();
         CheckClimbing();
-        CheckWallClimbing();
+        //CheckWallClimbing();
         if(isGrounded)
         {
             HandleInput();
@@ -242,6 +244,7 @@ public class PlayerMovement : MonoBehaviour
     void WallClimbingInput()
     {
 
+        
         //input = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
 
         //input = transform.TransformDirection(input);
@@ -262,9 +265,10 @@ public class PlayerMovement : MonoBehaviour
             num4 = -135f;
 
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg; // + cam.eulerAngles.y;
+            Vector3 moveDirection = Quaternion.FromToRotation(cam.up, Vector3.up)
+                * cam.TransformDirection(new Vector3(direction.x, 0f, direction.y));
             
-            /*
-            if (var > -45f && var < 46f) 
+            if (this.transform.rotation.y > -45f && this.transform.rotation.y !<= 45f) 
             {
                 //float targetAngle = Mathf.Atan2(-direction.x, direction.z) * Mathf.Rad2Deg; // + cam.eulerAngles.y;
                 //targetAngle = targetAngle;// - 90f;
@@ -283,9 +287,7 @@ public class PlayerMovement : MonoBehaviour
 
                 controller.Move(moveDir.normalized * speed * Time.deltaTime);
             }
-            */
-            
-            if (rotationCheck.transform.rotation.y < -135f) 
+            else if (this.transform.rotation.y < -135f || this.transform.rotation.y > 135f) 
             {
                 Vector3 moveDir = Quaternion.Euler(0f, 0f, -targetAngle) * Vector3.up;
                 // had to add back the 90f for the targetAngle variable
@@ -297,11 +299,28 @@ public class PlayerMovement : MonoBehaviour
             
          }
         
+        /*
+        Vector3 hVelocity = controller.velocity;
+        hVelocity = new Vector3(controller.velocity.x, 0, controller.velocity.z);
 
+        float h = Input.GetAxis("Horizontal");
+        float v = Input.GetAxis("Vertical");
+        Vector2 input = SquareToCircle(new Vector2(h, v));
 
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, // Position
+                            transform.forward, //Direction
+                            out hit))           //Hit Data
+        {
+            transform.forward = -hit.normal;
+            controller.transform.position = Vector3.Lerp(controller.transform.position,
+                                                         hit.point + hit.normal * 0.51f,
+                                                         10f * Time.deltaTime);
+        }
 
+        hVelocity = transform.TransformDirection(input) * climbSpeed;
 
-
+        */
 
     }
 
@@ -515,6 +534,8 @@ public class PlayerMovement : MonoBehaviour
         yVelocity = Vector3.ClampMagnitude(yVelocity, speed);
     }
 
+
+    /*
     void CheckWallClimbing()
     {
         /*
@@ -529,7 +550,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         */
-
+        /*
         canWallClimb = Physics.Raycast(transform.position, transform.forward, out climbHit, 0.7f, climbMask);
         float wallClimbAngle = Vector3.Angle(-climbHit.normal, transform.forward);
         if (wallClimbAngle < 15 && !hasWallClimbed && canWallClimb)
@@ -540,9 +561,30 @@ public class PlayerMovement : MonoBehaviour
         {
             isWallClimbing = false;
         }
-
+        
+        /*
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, // Position
+                            transform.forward, //Direction
+                            out hit))           //Hit Data
+        {
+            transform.forward = -hit.normal;
+            controller.transform.position = Vector3.Lerp(controller.transform.position,
+                                                         hit.point + hit.normal * 0.51f,
+                                                         10f * Time.deltaTime);
+        }
+        if (wallClimbAngle < 15 && !hasWallClimbed && canWallClimb)
+        {
+            isWallClimbing = true;
+        }
+        else
+        {
+            isWallClimbing = false;
+        }
+        */
+        /*
     }
-
+        */
     void WallClimbMovement()
     {
 
