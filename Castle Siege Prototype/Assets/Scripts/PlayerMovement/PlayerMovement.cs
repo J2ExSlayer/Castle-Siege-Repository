@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -10,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
 
 
     public Transform groundCheck;
+    public Transform rotationCheck;
 
     public LayerMask groundMask;
 
@@ -23,12 +25,14 @@ public class PlayerMovement : MonoBehaviour
     Vector3 yVelocity;
     Vector3 maxYVelocity;
     Vector3 direction;
+    Vector3 wallDirection;
     Vector3 forwardDirection;
     Vector3 upDirection;
     Vector3 zDirection;
     Vector3 xDirection;
     Vector3 wallNormal;
     Vector3 lastWallNormal;
+
 
     RaycastHit leftWallHit;
     RaycastHit rightWallHit;
@@ -52,6 +56,11 @@ public class PlayerMovement : MonoBehaviour
     bool canWallClimb;
     bool hasWallClimbed;
 
+    bool facingPosX;
+    bool facingPosZ;
+    bool facingNegX;
+    bool facingNegZ;
+
     [SerializeField]
     int jumpCharges;
 
@@ -59,6 +68,11 @@ public class PlayerMovement : MonoBehaviour
     float gravity;
     float climbTimer;
     float wallClimbTimer;
+    float var;
+    float num1;
+    float num2;
+    float num3;
+    float num4;
 
     public float runSpeed;
     public float sprintSpeed;
@@ -227,6 +241,7 @@ public class PlayerMovement : MonoBehaviour
 
     void WallClimbingInput()
     {
+
         //input = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
 
         //input = transform.TransformDirection(input);
@@ -234,69 +249,59 @@ public class PlayerMovement : MonoBehaviour
 
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
-        
+
         Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
 
 
 
-        //if (direction.magnitude >= 0.1f)
-        //{
+        if (direction.magnitude >= 0.1f)
+        {
+            num1 = -45f;
+            num2 = 45f;
+            num3 = 135f;
+            num4 = -135f;
 
-            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg; // + cam.eulerAngles.z;
-            //float wallAngle = Mathf.Atan2(direction.z, direction.y) * Mathf.Rad2Deg;
-            //targetAngle = targetAngle - 90f;
-            // The rotation wants to be at 0 degrees on the x
-            // but forward is on the z not the x axis so I needed to rotate -90 degrees for everything to be accurate
-
-            //float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
-
-            //transform.rotation = Quaternion.Euler(0f, angle, 0f);
-
-            //Vector3 moveDir = Quaternion.Euler(0f, 0f, targetAngle) * Vector3.up;
-
-            //controller.Move(moveDir.normalized * speed * Time.deltaTime);
-
-
-            //Make targeAngle equal the less than or greater than check
-            if (this.gameObject.transform.rotation.y > 45f && this.gameObject.transform.rotation.y < 136f) // +x direction
+            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg; // + cam.eulerAngles.y;
+            
+            /*
+            if (var > -45f && var < 46f) 
             {
-                float posXDir = Mathf.Atan2(-direction.x, direction.z) * Mathf.Rad2Deg;
+                //float targetAngle = Mathf.Atan2(-direction.x, direction.z) * Mathf.Rad2Deg; // + cam.eulerAngles.y;
+                //targetAngle = targetAngle;// - 90f;
+                // The rotation wants to be at 0 degrees on the x
+                // but forward is on the z not the x axis so I needed to rotate -90 degrees for everything to be accurate
 
-                Vector3 moveDir = Quaternion.Euler(posXDir, 0f, 0f) * Vector3.up;
+                //float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
+
+                //transform.rotation = Quaternion.Euler(0f, angle, 0f);
+
+
+                Vector3 moveDir = Quaternion.Euler(0f, 0f, targetAngle) * Vector3.up;
+                // had to add back the 90f for the targetAngle variable
+                // at this point specifically because it was affecting the movement
+
+
+                controller.Move(moveDir.normalized * speed * Time.deltaTime);
+            }
+            */
+            
+            if (rotationCheck.transform.rotation.y < -135f) 
+            {
+                Vector3 moveDir = Quaternion.Euler(0f, 0f, -targetAngle) * Vector3.up;
+                // had to add back the 90f for the targetAngle variable
+                // at this point specifically because it was affecting the movement
+
 
                 controller.Move(moveDir.normalized * speed * Time.deltaTime);
             }
             
-            else if (this.gameObject.transform.rotation.y > -46f && this.gameObject.transform.rotation.y < 46f) // +z direction
-            {
-                float posZDir = Mathf.Atan2(-direction.x, direction.z) * Mathf.Rad2Deg;
+         }
+        
 
-                Vector3 moveDir = Quaternion.Euler(0f, 0f, posZDir) * Vector3.up;
 
-                controller.Move(moveDir.normalized * speed * Time.deltaTime);
-            }
-            
-            else if (this.gameObject.transform.rotation.y > -136f && this.gameObject.transform.rotation.y < -46f) // -x direction
-            {
-                float negXDir = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
 
-                Vector3 moveDir = Quaternion.Euler(negXDir, 0f, 0f) * Vector3.up;
 
-                controller.Move(moveDir.normalized * speed * Time.deltaTime);
-            }
-            else if (this.gameObject.transform.rotation.y > 135f || this.gameObject.transform.rotation.y < -135f) // -z direction
-            {
-               float negZDir = Mathf.Atan2(-direction.x, direction.z) * Mathf.Rad2Deg;
 
-                Vector3 moveDir = Quaternion.Euler(0f, 0f, negZDir) * Vector3.up;
-
-                controller.Move(moveDir.normalized * speed * Time.deltaTime);
-            }
-            
-
-            //controller.Move(moveDir.normalized * speed * Time.deltaTime);
-
-        //}
 
     }
 
@@ -512,6 +517,19 @@ public class PlayerMovement : MonoBehaviour
 
     void CheckWallClimbing()
     {
+        /*
+        isGrounded = Physics.CheckSphere(groundCheck.position, 0.2f, groundMask);
+        if (isGrounded)
+        {
+            jumpCharges = 1;
+            hasWallRun = false;
+            hasClimbed = false;
+            climbTimer = maxClimbTimer;
+
+        }
+
+        */
+
         canWallClimb = Physics.Raycast(transform.position, transform.forward, out climbHit, 0.7f, climbMask);
         float wallClimbAngle = Vector3.Angle(-climbHit.normal, transform.forward);
         if (wallClimbAngle < 15 && !hasWallClimbed && canWallClimb)
