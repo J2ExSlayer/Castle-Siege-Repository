@@ -18,6 +18,14 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask wallMask;
 
     public LayerMask climbMask;
+    public LayerMask zClimbPosMask;
+    public LayerMask zClimbNegMask;
+    public LayerMask xClimbPosMask;
+    public LayerMask xClimbNegMask;
+
+    [SerializeField]
+    private Quaternion currentRotation;
+
 
     public Collider coll;
 
@@ -35,11 +43,19 @@ public class PlayerMovement : MonoBehaviour
     Vector3 wallNormal;
     Vector3 lastWallNormal;
 
+    private Vector3 horizontalMove;
+    private Vector3 verticalMove;
+    
+
 
     RaycastHit leftWallHit;
     RaycastHit rightWallHit;
     RaycastHit wallHit;
     RaycastHit climbHit;
+    RaycastHit zPosClimbHit;
+    RaycastHit zNegClimbHit;
+    RaycastHit xPosClimbHit;
+    RaycastHit xNegClimbHit;
 
     bool isGrounded;
     bool isSprinting;
@@ -57,6 +73,28 @@ public class PlayerMovement : MonoBehaviour
     bool isWallClimbing;
     bool canWallClimb;
     bool hasWallClimbed;
+
+    bool zPosIsWallClimbing;
+    bool zPosCanWallClimb;
+    bool zPosHasWallClimbed;
+
+    bool zNegIsWallClimbing;
+    bool zNegCanWallClimb;
+    bool zNegHasWallClimbed;
+
+    bool xPosIsWallClimbing;
+    bool xPosCanWallClimb;
+    bool xPosHasWallClimbed;
+
+    bool xNegIsWallClimbing;
+    bool xNegCanWallClimb;
+    bool xNegHasWallClimbed;
+
+    bool canPosZWallClimb;
+    bool canNegZWallClimb;
+    bool canPosXWallClimb;
+    bool canNegXWallClimb;
+
 
     bool facingPosX;
     bool facingPosZ;
@@ -81,6 +119,7 @@ public class PlayerMovement : MonoBehaviour
     public float airSpeed;
     public float climbSpeed;
     public float wallClimbSpeed;
+    public float moveSpeed;
 
     public float maxClimbTimer;
     public float maxWallClimbTimer;
@@ -104,6 +143,8 @@ public class PlayerMovement : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
         coll = GetComponent<Collider>();
+        currentRotation = gameObject.transform.rotation;
+        Cursor.visible = false;
     }
 
 
@@ -114,18 +155,25 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-        WallClimbingInput();
+        //WallClimbingInput();
         //HandleInput();
         CheckWallRun();
         CheckClimbing();
         //CheckWallClimbing();
-        if(isGrounded)
+        CheckZPosWallClimbing();
+        CheckZNegWallClimbing();
+        CheckXPosWallClimbing();
+        CheckXNegWallClimbing();
+
+        if (isGrounded)
         {
             HandleInput();
             GroundedMovement();
             ApplyGravity();
+
         }
-        else if(!isGrounded && !isWallRunning && !isClimbing && !isWallClimbing)
+        else if (!isGrounded && !isWallRunning && !isClimbing &&
+            !zPosIsWallClimbing && !zNegIsWallClimbing && !xPosIsWallClimbing && !xNegIsWallClimbing)
         {
             HandleInput();
             AirMovement();
@@ -134,7 +182,7 @@ public class PlayerMovement : MonoBehaviour
             ApplyGravity();
         }
 
-        else if(isWallRunning)
+        else if (isWallRunning)
         {
             HandleInput();
             WallRunMovement();
@@ -143,37 +191,91 @@ public class PlayerMovement : MonoBehaviour
             //DecreaseSpeed(WallRuneSpeedDecrease);
             ApplyGravity();
         }
-        else if(isClimbing)
+        else if (isClimbing)
         {
             HandleInput();
             ClimbMovement();
             climbTimer -= 1f * Time.deltaTime;
-            if(climbTimer < 0)
+            if (climbTimer < 0)
             {
                 isClimbing = false;
                 hasClimbed = true;
             }
             ApplyGravity();
         }
-        
-        else if (isWallClimbing)
+
+        else if (zPosIsWallClimbing)
         {
-            WallClimbingInput();
+
+
+            ZPosWallClimbingInput();
+
+
             WallClimbMovement();
             wallClimbTimer = 1f * Time.deltaTime;
             if (wallClimbTimer < 0)
             {
-                isWallClimbing = false;
-                hasWallClimbed = true;
+                zPosIsWallClimbing = false;
+                zPosHasWallClimbed = true;
+
+
             }
         }
-        
-        //GroundedMovement();
-        CheckGround();
-        controller.Move(move * Time.deltaTime);
-        
+        else if (zNegIsWallClimbing)
+        {
 
-    }
+            ZNegWallClimbingInput();
+            
+
+            WallClimbMovement();
+            wallClimbTimer = 1f * Time.deltaTime;
+            if (wallClimbTimer < 0)
+            {
+                zNegIsWallClimbing = false;
+                zNegHasWallClimbed = true;
+
+                
+            }
+        }
+        else if (xPosIsWallClimbing)
+        {
+
+            XPosWallClimbingInput();
+           
+
+            WallClimbMovement();
+            wallClimbTimer = 1f * Time.deltaTime;
+            if (wallClimbTimer < 0)
+            {
+                
+                xPosIsWallClimbing = false;
+                xPosHasWallClimbed = true;
+
+               
+            }
+        }
+        else if (xNegIsWallClimbing)
+        {
+
+
+            XNegWallClimbingInput();
+
+            WallClimbMovement();
+            wallClimbTimer = 1f * Time.deltaTime;
+            if (wallClimbTimer < 0)
+            {
+                
+                xNegIsWallClimbing = false;
+                xNegHasWallClimbed = true;
+            }
+        }
+
+                //GroundedMovement();
+                CheckGround();
+                controller.Move(move * Time.deltaTime);
+
+
+            }
 
     Vector2 SquareToCircle(Vector2 input)
     {
@@ -195,25 +297,25 @@ public class PlayerMovement : MonoBehaviour
 
             
 
-    if (direction.magnitude >= 0.1f)
-        {
-            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
-            //targetAngle = targetAngle;// - 90f;
-            // The rotation wants to be at 0 degrees on the x
-            // but forward is on the z not the x axis so I needed to rotate -90 degrees for everything to be accurate
+        if (direction.magnitude >= 0.1f)
+            {
+                float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
+                //targetAngle = targetAngle;// - 90f;
+                // The rotation wants to be at 0 degrees on the x
+                // but forward is on the z not the x axis so I needed to rotate -90 degrees for everything to be accurate
 
-            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
+                float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
 
-            transform.rotation = Quaternion.Euler(0f, angle, 0f);
-
-
-            Vector3 moveDir = Quaternion.Euler(0f, targetAngle /*+ 90f*/ , 0f) * Vector3.forward;
-            // had to add back the 90f for the targetAngle variable
-            // at this point specifically because it was affecting the movement
+                transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
 
-            controller.Move(moveDir.normalized * speed * Time.deltaTime);
-        } 
+                Vector3 moveDir = Quaternion.Euler(0f, targetAngle /*+ 90f*/ , 0f) * Vector3.forward;
+                // had to add back the 90f for the targetAngle variable
+                // at this point specifically because it was affecting the movement
+
+
+                controller.Move(moveDir.normalized * speed * Time.deltaTime);
+            } 
         
 
 
@@ -241,10 +343,22 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
+    /*
     void WallClimbingInput()
     {
 
+
+        /*
+        horizontalMove = Input.GetAxis("Horizontal") * transform.right;
+        verticalMove = Input.GetAxis("Vertical") * new Vector3(transform.forward.x, transform.forward.z, 0f);
+
+        Vector3 wallMove = horizontalMove + verticalMove;
+
+        transform.position += wallMove * speed * Time.deltaTime;
+        */
+
         
+    /*
         //input = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
 
         //input = transform.TransformDirection(input);
@@ -264,11 +378,13 @@ public class PlayerMovement : MonoBehaviour
             num3 = 135f;
             num4 = -135f;
 
+            // Set Variables for the directions and don't use if statement
+
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg; // + cam.eulerAngles.y;
-            Vector3 moveDirection = Quaternion.FromToRotation(cam.up, Vector3.up)
-                * cam.TransformDirection(new Vector3(direction.x, 0f, direction.y));
-            
-            if (this.transform.rotation.y > -45f && this.transform.rotation.y !<= 45f) 
+
+
+
+            if () 
             {
                 //float targetAngle = Mathf.Atan2(-direction.x, direction.z) * Mathf.Rad2Deg; // + cam.eulerAngles.y;
                 //targetAngle = targetAngle;// - 90f;
@@ -287,15 +403,16 @@ public class PlayerMovement : MonoBehaviour
 
                 controller.Move(moveDir.normalized * speed * Time.deltaTime);
             }
-            else if (this.transform.rotation.y < -135f || this.transform.rotation.y > 135f) 
-            {
+            
+            //if (currentRotation.y > 135f ) 
+            //{
                 Vector3 moveDir = Quaternion.Euler(0f, 0f, -targetAngle) * Vector3.up;
                 // had to add back the 90f for the targetAngle variable
                 // at this point specifically because it was affecting the movement
 
 
                 controller.Move(moveDir.normalized * speed * Time.deltaTime);
-            }
+            //}
             
          }
         
@@ -321,7 +438,77 @@ public class PlayerMovement : MonoBehaviour
         hVelocity = transform.TransformDirection(input) * climbSpeed;
 
         */
+    /*
+    }
+    */
 
+    void ZPosWallClimbingInput()
+    {
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
+
+        Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
+
+        if (direction.magnitude >= 0.1f)
+        {
+      
+            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg; 
+
+             Vector3 moveDir = Quaternion.Euler(0f, 0f, -targetAngle) * Vector3.up;
+       
+             controller.Move(moveDir.normalized * speed * Time.deltaTime);
+        }
+    }
+    void ZNegWallClimbingInput()
+    {
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
+
+        Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
+
+        if (direction.magnitude >= 0.1f)
+        {
+
+            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+
+            Vector3 moveDir = Quaternion.Euler(0f, 0f, targetAngle) * Vector3.up;
+
+            controller.Move(moveDir.normalized * speed * Time.deltaTime);
+        }
+    }
+    void XPosWallClimbingInput()
+    {
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
+
+        Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
+
+        if (direction.magnitude >= 0.1f)
+        {
+
+            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+
+            Vector3 moveDir = Quaternion.Euler(-targetAngle, 0f, 0f) * Vector3.up;
+
+            controller.Move(moveDir.normalized * speed * Time.deltaTime);
+        }
+    }
+    void XNegWallClimbingInput()
+    {
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
+
+        Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
+
+        if (direction.magnitude >= 0.1f)
+        {
+
+            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+
+            Vector3 moveDir = Quaternion.Euler(targetAngle, 0f, 0f) * Vector3.up;
+
+            controller.Move(moveDir.normalized * speed * Time.deltaTime);
+        }
     }
 
     void GroundedMovement()
@@ -377,7 +564,9 @@ public class PlayerMovement : MonoBehaviour
 
     void ApplyGravity()
     {
-        gravity = isWallRunning ? wallRunGravity : isClimbing ? 0f : isWallClimbing ? 0f : normalGravity;
+        gravity = isWallRunning ? wallRunGravity : isClimbing ? 0f : 
+            zPosIsWallClimbing ? 0f : zNegIsWallClimbing ? 0f : xPosIsWallClimbing ? 0f : xNegIsWallClimbing ? 0f :
+            normalGravity;
         yVelocity.y += gravity * Time.deltaTime;
         if(yVelocity.y < -10f)
         {
@@ -404,7 +593,11 @@ public class PlayerMovement : MonoBehaviour
         
         hasClimbed = false;
         climbTimer = maxClimbTimer;
-        hasWallClimbed = false;
+        //hasWallClimbed = false;
+        zPosHasWallClimbed = false;
+        zNegHasWallClimbed = false;
+        xPosHasWallClimbed = false;
+        xNegHasWallClimbed = false;
         wallClimbTimer = maxWallClimbTimer;
 
         yVelocity.y = Mathf.Sqrt(jumpHeight * -2f * normalGravity);
@@ -535,56 +728,91 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
-    /*
-    void CheckWallClimbing()
+    
+    void CheckZPosWallClimbing()
     {
-        /*
-        isGrounded = Physics.CheckSphere(groundCheck.position, 0.2f, groundMask);
-        if (isGrounded)
-        {
-            jumpCharges = 1;
-            hasWallRun = false;
-            hasClimbed = false;
-            climbTimer = maxClimbTimer;
 
-        }
 
-        */
-        /*
-        canWallClimb = Physics.Raycast(transform.position, transform.forward, out climbHit, 0.7f, climbMask);
-        float wallClimbAngle = Vector3.Angle(-climbHit.normal, transform.forward);
-        if (wallClimbAngle < 15 && !hasWallClimbed && canWallClimb)
+        zPosCanWallClimb = Physics.Raycast(transform.position, transform.forward, out zPosClimbHit, 0.7f, zClimbPosMask);
+        float zPosWallClimbAngle = Vector3.Angle(-zPosClimbHit.normal, transform.forward);
+        if (zPosWallClimbAngle < 15 && !zPosHasWallClimbed && zPosCanWallClimb)
         {
-            isWallClimbing = true;
+            zPosIsWallClimbing = true;
+            
+            
+            
+            
         }
         else
         {
-            isWallClimbing = false;
+            zPosIsWallClimbing = false;
         }
         
-        /*
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, // Position
-                            transform.forward, //Direction
-                            out hit))           //Hit Data
+        
+
+    }
+    void CheckZNegWallClimbing()
+    {
+
+
+        zNegCanWallClimb = Physics.Raycast(transform.position, transform.forward, out zNegClimbHit, 0.7f, zClimbNegMask);
+        float zNegWallClimbAngle = Vector3.Angle(-zNegClimbHit.normal, transform.forward);
+        if (zNegWallClimbAngle < 15 && !zNegHasWallClimbed && zNegCanWallClimb)
         {
-            transform.forward = -hit.normal;
-            controller.transform.position = Vector3.Lerp(controller.transform.position,
-                                                         hit.point + hit.normal * 0.51f,
-                                                         10f * Time.deltaTime);
-        }
-        if (wallClimbAngle < 15 && !hasWallClimbed && canWallClimb)
-        {
-            isWallClimbing = true;
+            zNegIsWallClimbing = true;
+            
         }
         else
         {
-            isWallClimbing = false;
+            zNegIsWallClimbing = false;
         }
-        */
-        /*
+        
+
+        
+
     }
-        */
+    void CheckXPosWallClimbing()
+    {
+
+
+
+        xPosCanWallClimb = Physics.Raycast(transform.position, transform.forward, out xPosClimbHit, 0.7f, xClimbPosMask);
+        float xPosWallClimbAngle = Vector3.Angle(-xPosClimbHit.normal, transform.forward);
+        if (xPosWallClimbAngle < 15 && !xPosHasWallClimbed && xPosCanWallClimb)
+        {
+            xPosIsWallClimbing = true;
+            
+        }
+        else
+        {
+            xPosIsWallClimbing = false;
+        }
+        
+
+        
+
+    }
+    void CheckXNegWallClimbing()
+    {
+
+
+
+        xNegCanWallClimb = Physics.Raycast(transform.position, transform.forward, out xNegClimbHit, 0.7f, xClimbNegMask);
+        float xNegWallClimbAngle = Vector3.Angle(-xNegClimbHit.normal, transform.forward);
+        if (xNegWallClimbAngle < 15 && !xNegHasWallClimbed && xNegCanWallClimb)
+        {
+            xNegIsWallClimbing = true;
+            
+        }
+        else
+        {
+            xNegIsWallClimbing = false;
+        }
+
+        
+
+    }
+
     void WallClimbMovement()
     {
 

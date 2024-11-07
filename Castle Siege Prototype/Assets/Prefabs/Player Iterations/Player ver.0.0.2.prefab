@@ -106,6 +106,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
   groundCheck: {fileID: 7812335852349978047}
+  rotationCheck: {fileID: 0}
   groundMask:
     serializedVersion: 2
     m_Bits: 8
@@ -114,7 +115,21 @@ MonoBehaviour:
     m_Bits: 64
   climbMask:
     serializedVersion: 2
+    m_Bits: 0
+  zClimbPosMask:
+    serializedVersion: 2
     m_Bits: 128
+  zClimbNegMask:
+    serializedVersion: 2
+    m_Bits: 256
+  xClimbPosMask:
+    serializedVersion: 2
+    m_Bits: 512
+  xClimbNegMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  currentRotation: {x: 0, y: 0, z: 0, w: 0}
+  coll: {fileID: 0}
   yVelocity: {x: 0, y: 0, z: 0}
   jumpCharges: 0
   runSpeed: 12
@@ -122,6 +137,7 @@ MonoBehaviour:
   airSpeed: 0.3
   climbSpeed: 8
   wallClimbSpeed: 5
+  moveSpeed: 0
   maxClimbTimer: 1
   maxWallClimbTimer: 1
   wallRunSpeedIncrease: 0
