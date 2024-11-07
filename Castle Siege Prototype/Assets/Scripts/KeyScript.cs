@@ -4,21 +4,13 @@ using UnityEngine;
 
 public class KeyScript : MonoBehaviour
 {
+    public Component doorcolliderhere;
+    public GameObject KeyGone;
 
-    public GameObject doorCollider;
-
-    // Start is called before the first frame update
-    void Start()
+    void OnTriggerStay()
     {
-        doorCollider.SetActive(false);
+        if (Input.GetKeyUp(KeyCode.E)) ;
+
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if(other.gameObject.tag == "Player")
-        {
-            doorCollider.SetActive(true);
-            Destroy(gameObject);
-        }
-    }
 }
