@@ -129,6 +129,7 @@ public class PlayerMovement : MonoBehaviour
 
     public float normalGravity;
     public float wallRunGravity;
+    public float gravityMax;
 
     public float jumpHeight;
 
@@ -567,10 +568,10 @@ public class PlayerMovement : MonoBehaviour
         gravity = isWallRunning ? wallRunGravity : isClimbing ? 0f : 
             zPosIsWallClimbing ? 0f : zNegIsWallClimbing ? 0f : xPosIsWallClimbing ? 0f : xNegIsWallClimbing ? 0f :
             normalGravity;
-        yVelocity.y += gravity * Time.deltaTime;
-        if(yVelocity.y < -10f)
+        yVelocity.y += gravity * Time.deltaTime * 2;
+        if(yVelocity.y < gravityMax)
         {
-            yVelocity.y = -10f;
+            yVelocity.y = gravityMax;
         }
         controller.Move(yVelocity * Time.deltaTime);
         
