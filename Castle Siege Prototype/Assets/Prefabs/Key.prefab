@@ -284,7 +284,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db4d4aa71f5d016458074dd26329df12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  doorHingehere: {fileID: 0}
+  doorHingehere: {fileID: 1349122465992314131, guid: 299a11cda51050048839e8acb9d18f06, type: 3}
   KeyGone: {fileID: 4708958162551458889}
 --- !u!1 &4963725904465982081
 GameObject:
