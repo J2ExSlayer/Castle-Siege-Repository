@@ -435,7 +435,6 @@ GameObject:
   - component: {fileID: 5614058125677210417}
   - component: {fileID: 6972466251465085432}
   - component: {fileID: 3077306466595751081}
-  - component: {fileID: 3396172337550709426}
   m_Layer: 0
   m_Name: DoorWithHinge(Red)
   m_TagString: Untagged
@@ -558,19 +557,6 @@ Animation:
   m_PlayAutomatically: 0
   m_AnimatePhysics: 0
   m_CullingType: 0
---- !u!114 &3396172337550709426
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2486598598236462481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7dfcd65469eb97e4ab357bdae4a3924b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hingeHere: {fileID: 3077306466595751081}
 --- !u!1 &2511949593340286160
 GameObject:
   m_ObjectHideFlags: 0

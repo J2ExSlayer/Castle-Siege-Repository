@@ -4,11 +4,19 @@ using UnityEngine;
 
 public class KeyScript : MonoBehaviour
 {
+    public GameObject doorCollider;
+    void Start()
+    {
+        doorCollider.SetActive(false);
+    }
 
-    public Component doorHingehere;
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.tag == "Player")
+        {
+            doorCollider.SetActive(true);
+            Destroy(gameObject);
 
-    
-   
-
-    
+        }
+    }
 }
