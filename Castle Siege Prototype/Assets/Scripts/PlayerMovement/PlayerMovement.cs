@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.HID;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -22,6 +24,8 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask zClimbNegMask;
     public LayerMask xClimbPosMask;
     public LayerMask xClimbNegMask;
+
+    
 
     [SerializeField]
     private Quaternion currentRotation;
@@ -104,7 +108,10 @@ public class PlayerMovement : MonoBehaviour
     bool facingNegZ;
 
     bool onFrontWall;
+    [SerializeField]
     bool isTestWallClimbing;
+
+    bool isWallJumping;
 
     [SerializeField]
     int jumpCharges;
@@ -118,6 +125,8 @@ public class PlayerMovement : MonoBehaviour
     float num2;
     float num3;
     float num4;
+
+    float wallJumpTimer;
 
     public float runSpeed;
     public float sprintSpeed;
@@ -140,7 +149,19 @@ public class PlayerMovement : MonoBehaviour
 
     public float turnSmoothTime = 0.1f;
 
+    public float maxWallJumpTimer;
+
     float turnSmoothVelocity;
+
+
+    // variables for wall jumping
+    private Vector3 moveVector;
+    private Vector3 lastMove;
+    private float wallHopSpeed = 8;
+    private float jumpForce = 8;
+    //private float gravity = 25;
+    private float verticalVelocity;
+
 
     
 
@@ -160,7 +181,7 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
 
-
+        MoveVector();
 
         //WallClimbingInput();
         //HandleInput();
@@ -172,7 +193,7 @@ public class PlayerMovement : MonoBehaviour
         CheckXPosWallClimbing();
         CheckXNegWallClimbing();
 
-        //CheckTestWallClimb();
+        CheckTestWallClimb();
 
         if (isGrounded)
         {
@@ -183,7 +204,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (!isGrounded && !isWallRunning && !isClimbing &&
             !zPosIsWallClimbing && !zNegIsWallClimbing && !xPosIsWallClimbing && !xNegIsWallClimbing
-            )
+            && !isTestWallClimbing)
         {
             HandleInput();
             AirMovement();
@@ -226,6 +247,19 @@ public class PlayerMovement : MonoBehaviour
             WallClimbMovement();
             jumpCharges = 1;
             wallClimbTimer = 1f * Time.deltaTime;
+            if (!controller.isGrounded && zPosClimbHit.normal.y < 0.1f)
+            {
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    Debug.DrawRay(zPosClimbHit.point, zPosClimbHit.normal, Color.red, 1.25f);
+                    //verticalVelocity = jumpForce;
+                    Jump();
+                    move = zPosClimbHit.normal * wallHopSpeed;
+
+                }
+
+            }
+            /*
             if (wallClimbTimer < 0)
             {
                 zPosIsWallClimbing = false;
@@ -233,6 +267,7 @@ public class PlayerMovement : MonoBehaviour
 
 
             }
+            */
         }
         else if (zNegIsWallClimbing)
         {
@@ -243,6 +278,20 @@ public class PlayerMovement : MonoBehaviour
             WallClimbMovement();
             jumpCharges = 1;
             wallClimbTimer = 1f * Time.deltaTime;
+            if (!controller.isGrounded && zNegClimbHit.normal.y < 0.1f)
+            {
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    Debug.DrawRay(zNegClimbHit.point, zNegClimbHit.normal, Color.red, 1.25f);
+                    //verticalVelocity = jumpForce;
+                    Jump();
+                    move = zNegClimbHit.normal * wallHopSpeed;
+
+                }
+
+            }
+
+            /*
             if (wallClimbTimer < 0)
             {
                 zNegIsWallClimbing = false;
@@ -250,6 +299,8 @@ public class PlayerMovement : MonoBehaviour
 
                 
             }
+
+            */
         }
         else if (xPosIsWallClimbing)
         {
@@ -260,6 +311,19 @@ public class PlayerMovement : MonoBehaviour
             WallClimbMovement();
             jumpCharges = 1;
             wallClimbTimer = 1f * Time.deltaTime;
+            if (!controller.isGrounded && xPosClimbHit.normal.y < 0.1f)
+            {
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    Debug.DrawRay(xPosClimbHit.point, xPosClimbHit.normal, Color.red, 1.25f);
+                    //verticalVelocity = jumpForce;
+                    Jump();
+                    move = xPosClimbHit.normal * wallHopSpeed;
+
+                }
+
+            }
+            /*
             if (wallClimbTimer < 0)
             {
                 
@@ -268,7 +332,8 @@ public class PlayerMovement : MonoBehaviour
 
                
             }
-            
+            */
+
         }
         else if (xNegIsWallClimbing)
         {
@@ -279,17 +344,81 @@ public class PlayerMovement : MonoBehaviour
             WallClimbMovement();
             jumpCharges = 1;
             wallClimbTimer = 1f * Time.deltaTime;
+            if (!controller.isGrounded && xNegClimbHit.normal.y < 0.1f)
+            {
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    Debug.DrawRay(xNegClimbHit.point, xNegClimbHit.normal, Color.red, 1.25f);
+                    //verticalVelocity = jumpForce;
+                    Jump();
+                    move = xNegClimbHit.normal * wallHopSpeed;
+
+                }
+
+            }
+            /*
             if (wallClimbTimer < 0)
             {
                 
                 xNegIsWallClimbing = false;
                 xNegHasWallClimbed = true;
             }
+            */
         }
         
         else if (isTestWallClimbing)
         {
-            //TestWallClimbMovement();
+
+            TestWallClimbingInput();
+
+            TestWallClimbMovement();
+            jumpCharges = 1;
+            wallClimbTimer = 1f * Time.deltaTime;
+
+            
+                if (!controller.isGrounded && frontWallHit.normal.y < 0.1f)
+                {
+                    if (Input.GetKeyDown(KeyCode.Space))
+                    {
+                        Debug.DrawRay(frontWallHit.point, frontWallHit.normal, Color.red, 1.25f);
+                        //verticalVelocity = jumpForce;
+                        Jump();
+                        move = frontWallHit.normal * wallHopSpeed;
+
+                    }
+
+                }
+
+            
+
+            /*
+            if(wallClimbTimer < 0)
+            {
+                isTestWallClimbing = false;
+                isTestWallClimbing = true;
+            }
+            */
+            /*
+            if (Input.GetKeyDown(KeyCode.Space) && jumpCharges > 0)
+            {
+                isTestWallClimbing = false;
+                onFrontWall = false;
+                //Jump();
+                StartCoroutine(ClimbDelay());
+                //jumpCharges = 0;
+                /*
+                TestExitWallClimb();
+                if (isTestWallClimbing == true)
+                {
+                    isTestWallClimbing = false;
+                    ApplyGravity();
+                }
+                */
+            /*
+        }
+    */
+
+
         }
         
                 //GroundedMovement();
@@ -347,9 +476,14 @@ public class PlayerMovement : MonoBehaviour
             Jump();
             StartCoroutine(JumpGroundDelay());
             //jumpCharges = 0;
-            //ExitWallClimbing();
-
-
+            /*
+            TestExitWallClimb();
+            if (isTestWallClimbing == true)
+            {
+                isTestWallClimbing = false;
+                ApplyGravity();
+            }
+            */
 
         }
 
@@ -566,6 +700,15 @@ public class PlayerMovement : MonoBehaviour
     {
         move.x += direction.x * airSpeed;
         move.z += direction.z * airSpeed;
+        if(isWallJumping)
+        {
+            move += forwardDirection;
+            wallJumpTimer -= 1f * Time.deltaTime;
+            if(wallJumpTimer < 0f)
+            {
+                isWallJumping = false;
+            }
+        }
     }
 
 
@@ -579,6 +722,7 @@ public class PlayerMovement : MonoBehaviour
             jumpCharges = 1;
             hasWallRun = false;
             hasClimbed = false;
+            hasWallClimbed = false;
             zPosHasWallClimbed = false;
             zNegHasWallClimbed = false;
             xPosHasWallClimbed = false;
@@ -593,7 +737,7 @@ public class PlayerMovement : MonoBehaviour
     {
         gravity = isWallRunning ? wallRunGravity : isClimbing ? 0f : 
             zPosIsWallClimbing ? 0f : zNegIsWallClimbing ? 0f : xPosIsWallClimbing ? 0f : xNegIsWallClimbing ? 0f :
-            normalGravity;
+            isTestWallClimbing ? 0f : normalGravity;
         yVelocity.y += gravity * Time.deltaTime * 2;
         if(yVelocity.y < gravityMax)
         {
@@ -621,40 +765,42 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (isWallClimbing)
         {
-            ExitWallClimbing();
+            TestExitWallClimb();
         }
         else if (zPosIsWallClimbing)
         {
-            ExitWallClimbing();
+            TestExitWallClimb();
         }
         else if (zNegIsWallClimbing)
         {
-            ExitWallClimbing();
+            TestExitWallClimb();
         }
         else if (xPosIsWallClimbing)
         {
-            ExitWallClimbing();
+            TestExitWallClimb();
         }
         else if (xNegIsWallClimbing)
         {
-            ExitWallClimbing();
+            TestExitWallClimb();
         }
         
         else if (isTestWallClimbing)
         {
-            //TestExitWallClimb();
+            TestExitWallClimb();
 
         }
         
 
-        hasWallClimbed = false;
+        //hasWallClimbed = false;
         hasClimbed = false;
         climbTimer = maxClimbTimer;
-        //hasWallClimbed = false;
+        hasWallClimbed = false;
         zPosHasWallClimbed = false;
         zNegHasWallClimbed = false;
         xPosHasWallClimbed = false;
         xNegHasWallClimbed = false;
+        
+        
         wallClimbTimer = maxWallClimbTimer;
 
         yVelocity.y = Mathf.Sqrt(jumpHeight * -2f * normalGravity);
@@ -672,6 +818,12 @@ public class PlayerMovement : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
         jumpCharges = 0;
+    }
+
+    IEnumerator ClimbDelay()
+    {
+        yield return new WaitForSeconds(1f);
+        onFrontWall = true;
     }
 
     void CheckWallRun()
@@ -854,16 +1006,16 @@ public class PlayerMovement : MonoBehaviour
 
         xPosCanWallClimb = Physics.Raycast(transform.position, transform.forward, out xPosClimbHit, 0.7f, xClimbPosMask);
         float xPosWallClimbAngle = Vector3.Angle(-xPosClimbHit.normal, transform.forward);
-        if (xPosCanWallClimb && xPosWallClimbAngle < 15 && !xPosHasWallClimbed)
+        if ( xPosWallClimbAngle < 15 && !xPosHasWallClimbed && xPosCanWallClimb)
         {
-            
+
             xPosIsWallClimbing = true;
-            
+            //TestTestWallClimb();
         }
-        else if (!xPosIsWallClimbing)
+        else 
         {
             xPosIsWallClimbing = false;
-            //ExitWallClimbing();
+            //TestExitWallClimb();
         }
         
 
@@ -995,20 +1147,59 @@ public class PlayerMovement : MonoBehaviour
     {
         isWallClimbing = false;
         StartCoroutine(JumpWallDelay());
+
         lastWallNormal = wallNormal;
     }
 
-    /*
+    
     void CheckTestWallClimb()
     {
-        onFrontWall = Physics.Raycast(transform.position, transform.forward, out frontWallHit, 0.7f, climbMask);
+
+        /*
+        xNegCanWallClimb = Physics.Raycast(transform.position, transform.forward, out xNegClimbHit, 0.7f, xClimbNegMask);
+        float xNegWallClimbAngle = Vector3.Angle(-xNegClimbHit.normal, transform.forward);
+        if (xNegWallClimbAngle < 15 && !xNegHasWallClimbed && xNegCanWallClimb)
+        {
+            xNegIsWallClimbing = true;
+
+        }
+        else
+        {
+            xNegIsWallClimbing = false;
+        }
+
+
+        void CheckWallRun()
+    {
+
+        onLeftWall = Physics.Raycast(transform.position, -transform.right, out leftWallHit, 0.7f, wallMask);
+        onRightWall = Physics.Raycast(transform.position, transform.right, out rightWallHit, 0.7f, wallMask);
+
+        if ((onRightWall || onLeftWall) && !isWallRunning)
+        {
+            TestWallRun();
+        }
+        if ((!onRightWall && !onLeftWall) && isWallRunning)
+        {
+            ExitWallRun();
+        }
+
+
+        */
+
+
+
+        onFrontWall = Physics.Raycast(transform.position, transform.forward, out frontWallHit, 0.7f, climbMask); //can climb
+        float frontWall = Vector3.Angle(-frontWallHit.normal, transform.forward);
 
         if ((onFrontWall) && !isTestWallClimbing)
         {
-            TestWallClimb();
+            //isTestWallClimbing = true;
+            TestTestWallClimb();
         }
         if((!onFrontWall) && isTestWallClimbing)
         {
+            //isTestWallClimbing = false;
             TestExitWallClimb();
         }
 
@@ -1016,36 +1207,211 @@ public class PlayerMovement : MonoBehaviour
 
     void TestWallClimb()
     {
+
+        /*
+         * void WallRun()
+    {
+        isWallRunning = true;
+        jumpCharges = 1;
+        //IncreaseSpeed(wallRunSpeedIncrease); 
+        // I don't know if we want this so I'm leaving it commented for now
+        yVelocity = new Vector3(0f, 0f, 0f);
+
+        
+        forwardDirection = Vector3.Cross(wallNormal, Vector3.up);
+
+        if(Vector3.Dot(forwardDirection, transform.forward) < 0)
+        {
+            forwardDirection = -forwardDirection;
+        }
+
+    }
+        */
+
+
         isTestWallClimbing = true;
         jumpCharges = 1;
 
         wallNormal = onFrontWall ? frontWallHit.normal : frontWallHit.normal;
         testForwardDirection = Vector3.Cross(wallNormal, Vector3.up);
+
+        if(Vector3.Dot(testForwardDirection, transform.forward) < 0)
+        {
+            testForwardDirection = -testForwardDirection;
+        }
+    }
+
+    void TestTestWallClimb()
+    {
+        /*
+         * void TestWallRun()
+    {
+        wallNormal = onLeftWall ? leftWallHit.normal : rightWallHit.normal;
+        if(hasWallRun)
+        {
+            float wallAngle = Vector3.Angle(wallNormal, lastWallNormal);
+            if (wallAngle > 15)
+            {
+                WallRun();
+            }
+        }
+        else
+        {
+            WallRun();
+            hasWallRun = true;
+        }
+
+    }
+        */
+
+        wallNormal = onFrontWall ? frontWallHit.normal : frontWallHit.normal;
+        if (hasWallClimbed)
+        {
+            float wallAngle = Vector3.Angle(wallNormal, lastWallNormal);
+            if (wallAngle > -1 && wallAngle < 1)
+            {
+                TestWallClimb();
+            }
+        }
+        else
+        {
+            TestWallClimb();
+            hasWallClimbed = true;
+        }
     }
 
     void TestExitWallClimb()
     {
+
+        /*void ExitWallRun()
+    {
+        isWallRunning = false;
+        StartCoroutine(JumpWallDelay());
+        lastWallNormal = wallNormal;
+    } */
+
         isTestWallClimbing = false;
+        StartCoroutine(JumpWallDelay());
+        lastWallNormal = wallNormal;
+        forwardDirection = wallNormal;
+        //isWallJumping = true;
+        wallJumpTimer = maxWallJumpTimer;
+
     }
 
     void TestWallClimbMovement()
     {
-        if (direction.z > (testForwardDirection.z - 10f) && direction.z < (testForwardDirection.z + 10f))
+
+        /*void WallRunMovement()
+    {
+        if (direction.z > (forwardDirection.z -10f) && direction.z < (forwardDirection.z + 10f))
         {
-            move += testForwardDirection;
+            move += forwardDirection;
         }
-        else if (direction.z < (testForwardDirection.z -10f) && direction.z > (testForwardDirection.z + 10f))
+        else if (direction.z <  (forwardDirection.z - 10f) && direction.z > (forwardDirection.z +10f))
+        {
+            move.x = 0f;
+            move.z = 0f;
+            ExitWallRun();
+        }
+        move.x += direction.x * airSpeed;
+
+        move = Vector3.ClampMagnitude(move, speed);
+
+    } */
+
+        
+        if (direction.z > (forwardDirection.z - 10f) && direction.z < (forwardDirection.z + 10f))
+        {
+            // move += testForwardDirection;
+        }
+        else if (direction.z < (forwardDirection.z -10f) && direction.z > (forwardDirection.z + 10f))
         {
             move.x = 0f;
             move.z = 0f;
             TestExitWallClimb();
         }
-        move.x += direction.x * airSpeed;
+        move.x += -direction.x * airSpeed;
 
         move = Vector3.ClampMagnitude(move, speed);
+        
     }
-    */
 
+    void TestWallClimbingInput()
+    {
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
 
+        Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
+
+        if (direction.magnitude >= 0.1f)
+        {
+
+            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+
+            Vector3 moveDir = Quaternion.Euler(-targetAngle, 0f, 0f) * Vector3.up;
+
+            controller.Move(moveDir.normalized * speed * Time.deltaTime);
+        }
+        /*
+        if (Input.GetKeyDown(KeyCode.Space) && jumpCharges > 0)
+        {
+
+            Jump();
+            StartCoroutine(JumpGroundDelay());
+            //jumpCharges = 0;
+            
+            
+
+        }
+        */
+        //HandleInput();
+
+    }
+
+    void MoveVector()
+    {
+        moveVector = Vector3.zero;
+        
+        if(controller.isGrounded)
+        {
+            verticalVelocity = -1;
+            if(Input.GetKeyDown(KeyCode.Space))
+            {
+                //verticalVelocity = jumpForce;
+                Jump();
+            }
+        }
+        else
+        {
+            //verticalVelocity -= gravity * Time.deltaTime;
+            moveVector = lastMove;
+        }
+        moveVector.y = 0;
+        moveVector.Normalize();
+        moveVector *= wallHopSpeed;
+        moveVector.y = verticalVelocity;
+
+        controller.Move(moveVector * Time.deltaTime);
+        lastMove = moveVector;
+
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if(!controller.isGrounded && hit.normal.y < 0.1f)
+        {
+            if(Input.GetKeyDown(KeyCode.Space))
+            {
+                Debug.DrawRay(hit.point, hit.normal, Color.red, 1.25f);
+                //verticalVelocity = jumpForce;
+                Jump();
+                move = hit.normal * wallHopSpeed;
+                
+            }
+            
+        }
+        
+    }
 
 }
