@@ -240,13 +240,13 @@ public class PlayerMovement : MonoBehaviour
         else if (zPosIsWallClimbing)
         {
 
-
             ZPosWallClimbingInput();
 
 
             WallClimbMovement();
             jumpCharges = 1;
             wallClimbTimer = 1f * Time.deltaTime;
+
             if (!controller.isGrounded && zPosClimbHit.normal.y < 0.1f)
             {
                 if (Input.GetKeyDown(KeyCode.Space))
@@ -259,15 +259,7 @@ public class PlayerMovement : MonoBehaviour
                 }
 
             }
-            /*
-            if (wallClimbTimer < 0)
-            {
-                zPosIsWallClimbing = false;
-                zPosHasWallClimbed = true;
 
-
-            }
-            */
         }
         else if (zNegIsWallClimbing)
         {
@@ -278,6 +270,7 @@ public class PlayerMovement : MonoBehaviour
             WallClimbMovement();
             jumpCharges = 1;
             wallClimbTimer = 1f * Time.deltaTime;
+
             if (!controller.isGrounded && zNegClimbHit.normal.y < 0.1f)
             {
                 if (Input.GetKeyDown(KeyCode.Space))
@@ -311,6 +304,7 @@ public class PlayerMovement : MonoBehaviour
             WallClimbMovement();
             jumpCharges = 1;
             wallClimbTimer = 1f * Time.deltaTime;
+
             if (!controller.isGrounded && xPosClimbHit.normal.y < 0.1f)
             {
                 if (Input.GetKeyDown(KeyCode.Space))
@@ -323,6 +317,7 @@ public class PlayerMovement : MonoBehaviour
                 }
 
             }
+            
             /*
             if (wallClimbTimer < 0)
             {
@@ -344,6 +339,7 @@ public class PlayerMovement : MonoBehaviour
             WallClimbMovement();
             jumpCharges = 1;
             wallClimbTimer = 1f * Time.deltaTime;
+
             if (!controller.isGrounded && xNegClimbHit.normal.y < 0.1f)
             {
                 if (Input.GetKeyDown(KeyCode.Space))
@@ -820,11 +816,10 @@ public class PlayerMovement : MonoBehaviour
         jumpCharges = 0;
     }
 
-    IEnumerator ClimbDelay()
-    {
-        yield return new WaitForSeconds(1f);
-        onFrontWall = true;
-    }
+    
+
+    
+    
 
     void CheckWallRun()
     {
@@ -944,19 +939,20 @@ public class PlayerMovement : MonoBehaviour
         //isWallClimbing = true;
         //jumpCharges = 1;
 
-        zPosCanWallClimb = Physics.Raycast(transform.position, transform.forward, out zPosClimbHit, 0.7f, zClimbPosMask);
+        zPosCanWallClimb = Physics.Raycast(groundCheck.position, transform.forward, out zPosClimbHit, 0.7f, zClimbPosMask);
         float zPosWallClimbAngle = Vector3.Angle(-zPosClimbHit.normal, transform.forward);
         if (zPosWallClimbAngle < 15 && !zPosHasWallClimbed && zPosCanWallClimb)
         {
             zPosIsWallClimbing = true;
-            
-            
-            
-            
+            //StartCoroutine(ClimbExtention());
+
+
+
         }
         else
         {
             zPosIsWallClimbing = false;
+            //StartCoroutine(ClimbExtention());
         }
 
         
@@ -969,16 +965,17 @@ public class PlayerMovement : MonoBehaviour
        // isWallClimbing = true;
         //jumpCharges = 1;
 
-        zNegCanWallClimb = Physics.Raycast(transform.position, transform.forward, out zNegClimbHit, 0.7f, zClimbNegMask);
+        zNegCanWallClimb = Physics.Raycast(groundCheck.position, transform.forward, out zNegClimbHit, 0.7f, zClimbNegMask);
         float zNegWallClimbAngle = Vector3.Angle(-zNegClimbHit.normal, transform.forward);
         if (zNegWallClimbAngle < 15 && !zNegHasWallClimbed && zNegCanWallClimb)
         {
             zNegIsWallClimbing = true;
-            
+            //StartCoroutine(ClimbExtention());
         }
         else
         {
             zNegIsWallClimbing = false;
+            //StartCoroutine(ClimbExtention());
         }
         
 
@@ -1003,19 +1000,22 @@ public class PlayerMovement : MonoBehaviour
 
         //isWallClimbing = true;
         //jumpCharges = 1;
-
-        xPosCanWallClimb = Physics.Raycast(transform.position, transform.forward, out xPosClimbHit, 0.7f, xClimbPosMask);
+        //isGrounded = Physics.CheckSphere(groundCheck.position, 0.2f, groundMask);
+        xPosCanWallClimb = Physics.Raycast(groundCheck.position, transform.forward, out xPosClimbHit, 0.7f, xClimbPosMask);
         float xPosWallClimbAngle = Vector3.Angle(-xPosClimbHit.normal, transform.forward);
         if ( xPosWallClimbAngle < 15 && !xPosHasWallClimbed && xPosCanWallClimb)
         {
 
             xPosIsWallClimbing = true;
+           
             //TestTestWallClimb();
+            //StartCoroutine(ClimbExtention());
         }
         else 
         {
             xPosIsWallClimbing = false;
             //TestExitWallClimb();
+            
         }
         
 
@@ -1028,16 +1028,17 @@ public class PlayerMovement : MonoBehaviour
         //jumpCharges = 1;
 
 
-        xNegCanWallClimb = Physics.Raycast(transform.position, transform.forward, out xNegClimbHit, 0.7f, xClimbNegMask);
+        xNegCanWallClimb = Physics.Raycast(groundCheck.position, transform.forward, out xNegClimbHit, 0.7f, xClimbNegMask);
         float xNegWallClimbAngle = Vector3.Angle(-xNegClimbHit.normal, transform.forward);
         if (xNegWallClimbAngle < 15 && !xNegHasWallClimbed && xNegCanWallClimb)
         {
             xNegIsWallClimbing = true;
-            
+            //StartCoroutine(ClimbExtention());
         }
         else
         {
-            xNegIsWallClimbing = false;
+          xNegIsWallClimbing = false;
+           //StartCoroutine(ClimbExtention());
         }
 
         

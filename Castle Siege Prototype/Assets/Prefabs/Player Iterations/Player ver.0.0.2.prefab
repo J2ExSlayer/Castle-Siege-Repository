@@ -147,7 +147,7 @@ MonoBehaviour:
     m_Bits: 64
   climbMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2048
   zClimbPosMask:
     serializedVersion: 2
     m_Bits: 128
@@ -163,10 +163,11 @@ MonoBehaviour:
   currentRotation: {x: 0, y: 0, z: 0, w: 0}
   coll: {fileID: 0}
   yVelocity: {x: 0, y: 0, z: 0}
+  isTestWallClimbing: 0
   jumpCharges: 0
   runSpeed: 8
   sprintSpeed: 15
-  airSpeed: 0.3
+  airSpeed: 0.1
   climbSpeed: 8
   wallClimbSpeed: 5
   moveSpeed: 7
@@ -179,6 +180,7 @@ MonoBehaviour:
   gravityMax: -15
   jumpHeight: 10
   turnSmoothTime: 0.1
+  maxWallJumpTimer: 0.1
 --- !u!1001 &8514642658138290241
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -11743,11 +11743,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 509731846266024444, guid: 4f9fc094f2e81c04fb9d0e9b470edea9, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.0000000042771364
+      value: -0.0000000042771338
       objectReference: {fileID: 0}
     - target: {fileID: 509731846266024444, guid: 4f9fc094f2e81c04fb9d0e9b470edea9, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 4.5807902e-10
+      value: 4.580787e-10
       objectReference: {fileID: 0}
     - target: {fileID: 4121967963596972647, guid: 4f9fc094f2e81c04fb9d0e9b470edea9, type: 3}
       propertyPath: m_Name
@@ -27748,20 +27748,12 @@ PrefabInstance:
       value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 1490313167381257270, guid: 37d473d957302bf4692e981f9c2c7e17, type: 3}
-      propertyPath: jumpHeight
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 1490313167381257270, guid: 37d473d957302bf4692e981f9c2c7e17, type: 3}
       propertyPath: climbMask.m_Bits
       value: 2048
       objectReference: {fileID: 0}
     - target: {fileID: 1490313167381257270, guid: 37d473d957302bf4692e981f9c2c7e17, type: 3}
       propertyPath: maxWallJumpTimer
       value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1490313167381257270, guid: 37d473d957302bf4692e981f9c2c7e17, type: 3}
-      propertyPath: isTestWallClimbing
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6396702415938789901, guid: 37d473d957302bf4692e981f9c2c7e17, type: 3}
       propertyPath: m_Name
