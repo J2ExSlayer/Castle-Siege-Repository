@@ -7,6 +7,12 @@ TagManager:
   - Key
   - DoorCollider
   - Door
+  - DoorYellow
+  - KeyYellow
+  - DoorRed
+  - KeyRed
+  - DoorBlue
+  - KeyBlue
   layers:
   - Default
   - TransparentFX
