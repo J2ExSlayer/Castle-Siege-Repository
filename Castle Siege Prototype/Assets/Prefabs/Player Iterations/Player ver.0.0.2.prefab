@@ -31,6 +31,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7386390835873555031}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3131196253828160828
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4081055253760700569}
+  m_Layer: 0
+  m_Name: Rotation Check
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4081055253760700569
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3131196253828160828}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7386390835873555031}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6396702415938789901
 GameObject:
   m_ObjectHideFlags: 0
@@ -42,9 +73,10 @@ GameObject:
   - component: {fileID: 7386390835873555031}
   - component: {fileID: 7923597197287811154}
   - component: {fileID: 1490313167381257270}
+  - component: {fileID: -2805070392694693968}
   m_Layer: 0
   m_Name: Player ver.0.0.2
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -64,6 +96,7 @@ Transform:
   m_Children:
   - {fileID: 3314003988534051014}
   - {fileID: 7812335852349978047}
+  - {fileID: 4081055253760700569}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!143 &7923597197287811154
@@ -106,7 +139,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
   groundCheck: {fileID: 7812335852349978047}
-  rotationCheck: {fileID: 0}
+  rotationCheck: {fileID: 4081055253760700569}
   groundMask:
     serializedVersion: 2
     m_Bits: 8
@@ -115,7 +148,7 @@ MonoBehaviour:
     m_Bits: 64
   climbMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2048
   zClimbPosMask:
     serializedVersion: 2
     m_Bits: 128
@@ -131,21 +164,36 @@ MonoBehaviour:
   currentRotation: {x: 0, y: 0, z: 0, w: 0}
   coll: {fileID: 0}
   yVelocity: {x: 0, y: 0, z: 0}
+  isTestWallClimbing: 0
   jumpCharges: 0
-  runSpeed: 12
-  sprintSpeed: 24
-  airSpeed: 0.3
+  runSpeed: 8
+  sprintSpeed: 15
+  airSpeed: 0.1
   climbSpeed: 8
   wallClimbSpeed: 5
-  moveSpeed: 0
+  moveSpeed: 7
   maxClimbTimer: 1
   maxWallClimbTimer: 1
   wallRunSpeedIncrease: 0
   wallRunSpeedDecrease: 0
-  normalGravity: -13
+  normalGravity: -14
   wallRunGravity: -1
-  jumpHeight: 5
+  gravityMax: -15
+  jumpHeight: 10
   turnSmoothTime: 0.1
+  maxWallJumpTimer: 0.1
+--- !u!114 &-2805070392694693968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6396702415938789901}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e1b9f53ce21d7b4ab4d498891f1b647, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &8514642658138290241
 PrefabInstance:
   m_ObjectHideFlags: 0
