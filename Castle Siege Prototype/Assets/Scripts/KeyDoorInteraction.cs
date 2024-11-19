@@ -13,6 +13,7 @@ public class KeyDoorInteraction : MonoBehaviour
             PlayerKeyInventory playerInventory = other.GetComponent<PlayerKeyInventory>();
             if (playerInventory != null && playerInventory.HasKey(doorColor))  // Check if the player has the right key
             {
+                
                 Destroy(gameObject);  // Destroy the door if the player has the correct key
                 Debug.Log(doorColor + " door opened!");
             }
