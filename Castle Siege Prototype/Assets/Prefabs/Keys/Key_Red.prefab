@@ -327,7 +327,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6820331228401494011}
   - component: {fileID: 7274433748391188526}
-  - component: {fileID: 3588764356730782678}
+  - component: {fileID: 7344718756046729770}
   m_Layer: 0
   m_Name: Key_Red
   m_TagString: Key
@@ -377,7 +377,7 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3588764356730782678
+--- !u!114 &7344718756046729770
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -386,7 +386,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5880646112081857480}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf6007d1cfa064f4592db5cc821b42ea, type: 3}
+  m_Script: {fileID: 11500000, guid: a2a241ea1cde0cf4988ecd9f6cdf3318, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   keyColor: Red
