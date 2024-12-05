@@ -10,7 +10,7 @@ public class NEW_KeyPickup : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            // Check if the player doesn't already have the key
+            // if the player doesn't already have the key
             if (!NEW_PlayerInventory.HasKey(keyColor))
             {
                 NEW_PlayerInventory.AddKey(keyColor);  // Add the key to inventory
