@@ -364,7 +364,7 @@ GameObject:
   - component: {fileID: 3845121342688302390}
   - component: {fileID: 3022954377026416180}
   - component: {fileID: 556729909014974211}
-  - component: {fileID: 4245876797279651220}
+  - component: {fileID: -1982202423540108113}
   m_Layer: 0
   m_Name: Door_Green
   m_TagString: Door
@@ -471,7 +471,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 9.858615, y: 3.148039, z: 37.499893}
   m_Center: {x: 0.8530862, y: -0.3878458, z: 15.998345}
---- !u!114 &4245876797279651220
+--- !u!114 &-1982202423540108113
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -480,7 +480,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2493636628456001431}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e7cea8bf33aada4ab758bd4bc387b87, type: 3}
+  m_Script: {fileID: 11500000, guid: a79118f3f33ca2246b02180861c347ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   doorColor: Green
