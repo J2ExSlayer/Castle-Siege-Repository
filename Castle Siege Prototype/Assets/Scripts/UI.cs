@@ -20,5 +20,8 @@ public class UI : MonoBehaviour
     {
         Application.Quit();
     }
-
+    public void ChangeSceneByName(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
+    }
 }
