@@ -1871,7 +1871,7 @@ GameObject:
   - component: {fileID: 736379078712114146}
   - component: {fileID: 4854742889290943197}
   - component: {fileID: 8926018836434896740}
-  - component: {fileID: 5463548000807460080}
+  - component: {fileID: -9127978461092784005}
   m_Layer: 0
   m_Name: Door_Blue
   m_TagString: Door
@@ -1978,7 +1978,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 9.858615, y: 3.148039, z: 37.499893}
   m_Center: {x: 0.8530862, y: -0.3878458, z: 15.998345}
---- !u!114 &5463548000807460080
+--- !u!114 &-9127978461092784005
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1987,7 +1987,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8459459476729577507}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e7cea8bf33aada4ab758bd4bc387b87, type: 3}
+  m_Script: {fileID: 11500000, guid: a79118f3f33ca2246b02180861c347ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   doorColor: Blue
