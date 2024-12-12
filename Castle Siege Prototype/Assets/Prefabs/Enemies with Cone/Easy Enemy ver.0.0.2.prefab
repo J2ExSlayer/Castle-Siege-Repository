@@ -119,8 +119,8 @@ MonoBehaviour:
   edgeIterations: 4
   edgeDistance: 0.5
   waypoints:
-  - {fileID: 8625686804971359520}
-  - {fileID: 3726680125462750735}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!54 &8230323016395379683
 Rigidbody:
   m_ObjectHideFlags: 0
