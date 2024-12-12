@@ -11,11 +11,13 @@ public class PlayerMovement : MonoBehaviour
     CharacterController controller;
     public Transform cam;
 
-
+    
     public Transform groundCheck;
+    public Transform mudCheck;
     public Transform rotationCheck;
 
     public LayerMask groundMask;
+    public LayerMask mudMask;
 
     public LayerMask wallMask;
 
@@ -64,6 +66,7 @@ public class PlayerMovement : MonoBehaviour
     RaycastHit frontWallHit;
 
     bool isGrounded;
+    bool isMud;
     bool isSprinting;
 
     bool isWallRunning;
@@ -202,7 +205,13 @@ public class PlayerMovement : MonoBehaviour
             ApplyGravity();
 
         }
-        else if (!isGrounded && !isWallRunning && !isClimbing &&
+        else if(isMud)
+        {
+            HandleInput();
+            GroundedMovement();
+            ApplyGravity();
+        }
+        else if (!isGrounded && !isMud && !isWallRunning && !isClimbing &&
             !zPosIsWallClimbing && !zNegIsWallClimbing && !xPosIsWallClimbing && !xNegIsWallClimbing
             && !isTestWallClimbing)
         {
@@ -419,6 +428,7 @@ public class PlayerMovement : MonoBehaviour
         
                 //GroundedMovement();
                 CheckGround();
+                CheckMud();
                 controller.Move(move * Time.deltaTime);
 
 
@@ -716,6 +726,25 @@ public class PlayerMovement : MonoBehaviour
         if (isGrounded)
         {
             jumpCharges = 1;
+            hasWallRun = false;
+            hasClimbed = false;
+            hasWallClimbed = false;
+            zPosHasWallClimbed = false;
+            zNegHasWallClimbed = false;
+            xPosHasWallClimbed = false;
+            xNegHasWallClimbed = false;
+            climbTimer = maxClimbTimer;
+
+        }
+    }
+
+    void CheckMud()
+    {
+
+        isMud = Physics.CheckSphere(mudCheck.position, 0.2f, mudMask);
+        if (isMud)
+        {
+            //jumpCharges = 1;
             hasWallRun = false;
             hasClimbed = false;
             hasWallClimbed = false;
