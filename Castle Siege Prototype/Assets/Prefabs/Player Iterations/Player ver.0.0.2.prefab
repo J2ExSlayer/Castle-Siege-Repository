@@ -139,10 +139,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
   groundCheck: {fileID: 7812335852349978047}
+  mudCheck: {fileID: 7812335852349978047}
   rotationCheck: {fileID: 4081055253760700569}
   groundMask:
     serializedVersion: 2
     m_Bits: 8
+  mudMask:
+    serializedVersion: 2
+    m_Bits: 16384
   wallMask:
     serializedVersion: 2
     m_Bits: 64
