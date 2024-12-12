@@ -26593,6 +26593,79 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1001 &711602125
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2403309946221996170, guid: cc134aa95580bb24e84d0fbc1d4ec5ea, type: 3}
+      propertyPath: scenename
+      value: BossScene
+      objectReference: {fileID: 0}
+    - target: {fileID: 5188441334214136695, guid: cc134aa95580bb24e84d0fbc1d4ec5ea, type: 3}
+      propertyPath: m_Name
+      value: Teleport
+      objectReference: {fileID: 0}
+    - target: {fileID: 6656190489884389634, guid: cc134aa95580bb24e84d0fbc1d4ec5ea, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 17.487411
+      objectReference: {fileID: 0}
+    - target: {fileID: 6656190489884389634, guid: cc134aa95580bb24e84d0fbc1d4ec5ea, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.34738463
+      objectReference: {fileID: 0}
+    - target: {fileID: 6656190489884389634, guid: cc134aa95580bb24e84d0fbc1d4ec5ea, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 10.939551
+      objectReference: {fileID: 0}
+    - target: {fileID: 6656190489884389634, guid: cc134aa95580bb24e84d0fbc1d4ec5ea, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1225.44
+      objectReference: {fileID: 0}
+    - target: {fileID: 6656190489884389634, guid: cc134aa95580bb24e84d0fbc1d4ec5ea, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1882.1747
+      objectReference: {fileID: 0}
+    - target: {fileID: 6656190489884389634, guid: cc134aa95580bb24e84d0fbc1d4ec5ea, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -423.65
+      objectReference: {fileID: 0}
+    - target: {fileID: 6656190489884389634, guid: cc134aa95580bb24e84d0fbc1d4ec5ea, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.6849209
+      objectReference: {fileID: 0}
+    - target: {fileID: 6656190489884389634, guid: cc134aa95580bb24e84d0fbc1d4ec5ea, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.17573677
+      objectReference: {fileID: 0}
+    - target: {fileID: 6656190489884389634, guid: cc134aa95580bb24e84d0fbc1d4ec5ea, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.17573677
+      objectReference: {fileID: 0}
+    - target: {fileID: 6656190489884389634, guid: cc134aa95580bb24e84d0fbc1d4ec5ea, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.6849209
+      objectReference: {fileID: 0}
+    - target: {fileID: 6656190489884389634, guid: cc134aa95580bb24e84d0fbc1d4ec5ea, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6656190489884389634, guid: cc134aa95580bb24e84d0fbc1d4ec5ea, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -28.781
+      objectReference: {fileID: 0}
+    - target: {fileID: 6656190489884389634, guid: cc134aa95580bb24e84d0fbc1d4ec5ea, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 90
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cc134aa95580bb24e84d0fbc1d4ec5ea, type: 3}
 --- !u!43 &731484621
 Mesh:
   m_ObjectHideFlags: 0
@@ -60294,11 +60367,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8117286302087232275, guid: 4f9fc094f2e81c04fb9d0e9b470edea9, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.0020000085
+      value: 0.0020000145
       objectReference: {fileID: 0}
     - target: {fileID: 8117286302087232275, guid: 4f9fc094f2e81c04fb9d0e9b470edea9, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.00028997104
+      value: -0.0002899719
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -61139,3 +61212,4 @@ SceneRoots:
   - {fileID: 523958847}
   - {fileID: 311041987}
   - {fileID: 2113679917}
+  - {fileID: 711602125}
