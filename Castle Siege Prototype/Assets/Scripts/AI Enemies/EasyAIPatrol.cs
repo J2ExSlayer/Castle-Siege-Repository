@@ -16,7 +16,9 @@ public class EasyAIPatrol : MonoBehaviour
     float currentWaitingTime;
     float maxWaitingTime;
     */
-    CharacterController player;
+    //CharacterController player;
+
+    //public PlayerMovement player;
 
     public NavMeshAgent navMeshAgent;
     public float startWaitTime = 4;
@@ -143,10 +145,10 @@ public class EasyAIPatrol : MonoBehaviour
             {
                 if(Vector3.Distance(transform.position, GameObject.FindGameObjectWithTag("Player").transform.position) >= 2.5f)
                 {
-                    {
-                        Stop();
-                        m_WaitTime -= Time.deltaTime;
-                    } }
+                  
+                    Stop();
+                    m_WaitTime -= Time.deltaTime;
+                } 
             }
         }
     }
@@ -257,11 +259,12 @@ public class EasyAIPatrol : MonoBehaviour
             {
                 m_PlayerInRange = false;
             }
+            if (m_PlayerInRange)
+            {
+                m_PlayerPosition = player.transform.position;
+            }
         }
-        if (m_PlayerInRange)
-        {
-            m_PlayerPosition = player.transform.position;
-        }
+        
     }
 
 
